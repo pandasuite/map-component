@@ -7,88 +7,296 @@
     "actions": [
       {
         "id": "toMarker",
-        "name": "Change Image",
+        "name": "Focus",
         "locale_name": {
-          "fr_FR": "Change Image"
-        },
-        "params": [
-          { "id": "useless", "name": "Useless", "locale_name": {"fr_FR": "Inutile"}, "type": "Boolean" }
-        ]
+          "fr_FR": "Focus"
+        }
       }
     ],
     "events": [
       {
         "id": "triggerMarker",
-        "name": "Image",
+        "name": "Single tap/click",
         "locale_name": {
-          "fr_FR": "Image"
+          "fr_FR": "Tape/Clic"
         }
       }
     ],
     "markers": [
       {
+        "hideSystemId": true,
         "params": [
-          { "id": "src", "name": "Source", "locale_name": {"fr_FR": "Source"}, "type": "String" }
+          {
+            "id": "iconUrl",
+            "name": "Icon URL",
+            "locale_name": {
+              "fr_FR": "URL de l'icône"
+            },
+            "type": "String",
+            "hidden": "marker.data.properties.type != 'marker'"
+          },
+          {
+            "id": "iconWidth",
+            "name": "Icon width",
+            "locale_name": {
+              "fr_FR": "Largeur de l'icône"
+            },
+            "type": "Integer",
+            "value": 25,
+            "hidden": "marker.data.properties.type != 'marker'"
+          },
+          {
+            "id": "iconHeight",
+            "name": "Icon height",
+            "locale_name": {
+              "fr_FR": "Hauteur de l'icône"
+            },
+            "type": "Integer",
+            "value": 41,
+            "hidden": "marker.data.properties.type != 'marker'"
+          },
+          {
+            "id": "iconAnchorX",
+            "name": "Icon anchor X",
+            "locale_name": {
+              "fr_FR": "Ancrage de l'icône X"
+            },
+            "type": "Float",
+            "value": 12,
+            "hidden": "marker.data.properties.type != 'marker'"
+          },
+          {
+            "id": "iconAnchorY",
+            "name": "Icon anchor Y",
+            "locale_name": {
+              "fr_FR": "Ancrage de l'icône Y"
+            },
+            "type": "Float",
+            "value": 41,
+            "hidden": "marker.data.properties.type != 'marker'"
+          },
+          {
+            "id": "color",
+            "name": "Stroke color",
+            "locale_name": {
+              "fr_FR": "Couleur du trait"
+            },
+            "type": "Color",
+            "value": "#3388ff",
+            "hidden": "marker.data.properties.type == 'marker' || marker.data.properties.type == 'circlemarker'"
+          },
+          {
+            "id": "weight",
+            "name": "Stroke width",
+            "locale_name": {
+              "fr_FR": "Largeur du trait"
+            },
+            "type": "Integer",
+            "value": 3,
+            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon'"
+          },
+          {
+            "id": "opacity",
+            "name": "Stroke opacity",
+            "locale_name": {
+              "fr_FR": "Opacité du trait"
+            },
+            "type": "Float",
+            "value": 1.0,
+            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon'"
+          },
+          {
+            "id": "fillColor",
+            "name": "Fill Color",
+            "locale_name": {
+              "fr_FR": "Couleur du remplissage"
+            },
+            "type": "Color",
+            "value": "#3388ff",
+            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon'"
+          },
+          {
+            "id": "fillOpacity",
+            "name": "Fill Opacity",
+            "locale_name": {
+              "fr_FR": "Opacité du remplissage"
+            },
+            "type": "Float",
+            "value": 0.2,
+            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon'"
+          }
         ]
       }
-    ]
+    ],
+    "defaults": {
+      "markers": {
+        "description": {
+          "value": "[%s]",
+          "args": [
+            {
+              "key": "data.properties.type"
+            }
+          ]
+        }
+      }
+    }
   },
 
   "properties": [
     {
-      "id": "searchTerm",
-      "name": "Search Term",
-      "locale_name": {
-        "fr_FR": "Terme de recherche"
-      },
+      "id": "lat",
+      "name": "Latitude",
+      "type": "Float",
+      "value": 48.861,
+      "hidden": true,
+      "bindable": true
+    },
+    {
+      "id": "lng",
+      "name": "Longitude",
+      "type": "Float",
+      "value": 2.344,
+      "hidden": true,
+      "bindable": true
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom",
+      "type": "Float",
+      "value": 13,
+      "hidden": true,
+      "bindable": true
+    },
+    {
+      "id": "pandaApiKey",
+      "name": "Google Maps API key",
       "type": "String",
-      "value": "panda"
+      "value": "AIzaSyBtzf0Qa1brPE6V75WQfHzsxHTb11puFzM",
+      "hidden": true
+    },
+    {
+      "id": "type",
+      "type": "Dropdown",
+      "value": "OpenStreetMap",
+      "items": [
+        {
+          "id": "OpenStreetMap",
+          "name": "OpenStreetMap"
+        },
+        {
+          "id": "Mapbox",
+          "name": "Mapbox"
+        }
+      ]
+    },
+    {
+      "id": "googleApiKey",
+      "name": "API key",
+      "type": "String",
+      "value": "",
+      "hidden": "properties.type.value != 'GoogleMaps'",
+      "required": true
+    },
+    {
+      "id": "mapboxAccessToken",
+      "name": "Access Token",
+      "type": "String",
+      "value": "",
+      "hidden": "properties.type.value != 'Mapbox'",
+      "required": true
+    },
+    {
+      "id": "mapboxStyle",
+      "type": "Dropdown",
+      "value": "mapbox://styles/mapbox/streets-v11",
+      "items": [
+        {
+          "id": "mapbox://styles/mapbox/streets-v11",
+          "name": "Mapbox Streets"
+        },
+        {
+          "id": "mapbox://styles/mapbox/outdoors-v11",
+          "name": "Mapbox Outdoors"
+        },
+        {
+          "id": "mapbox://styles/mapbox/light-v10",
+          "name": "Mapbox Light"
+        },
+        {
+          "id": "mapbox://styles/mapbox/dark-v10",
+          "name": "Mapbox Dark"
+        },
+        {
+          "id": "mapbox://styles/mapbox/satellite-v9",
+          "name": "Mapbox Satellite"
+        },
+        {
+          "id": "mapbox://styles/mapbox/satellite-streets-v11",
+          "name": "Mapbox Satellite Streets"
+        },
+        {
+          "id": "mapbox://styles/mapbox/navigation-day-v1",
+          "name": "Mapbox Navigation Day"
+        },
+        {
+          "id": "mapbox://styles/mapbox/navigation-night-v1",
+          "name": "Mapbox Navigation Night"
+        },
+        {
+          "id": "custom",
+          "name": "Custom",
+          "locale_name": {
+            "fr_FR": "Personnalisé"
+          }
+        }
+      ],
+      "hidden": "properties.type.value != 'Mapbox'"
+    },
+    {
+      "id": "mapboxStyleCustom",
+      "type": "String",
+      "value": "mapbox://styles/YOUR_USERNAME/YOUR_STYLE_ID",
+      "hidden": "properties.type.value != 'Mapbox' || properties.mapboxStyle.value != 'custom'"
     }
   ],
 
   "events": [
     {
-      "id": "imageChanged",
-      "name": "Image Changed",
+      "id": "mapChanged",
+      "name": "Map Position Changed",
       "locale_name": {
-        "fr_FR": "Image Changée"
+        "fr_FR": "Changement de la position de la carte"
       }
     }
   ],
 
   "actions": [
     {
-      "id": "changeColor",
-      "name": "Change Color",
+      "id": "changeMap",
+      "name": "Modifier la position de la carte",
       "params": [
         {
-          "id": "backgroundColor",
-          "name": "Background Color",
-          "locale_name": {
-            "fr_FR": "Couleur de fond"
-          },
-          "type": "String",
-          "value": "#FFFFFF"
+          "id": "lat",
+          "name": "Latitude",
+          "type": "Float",
+          "value": 48.861,
+          "bindable": true
+        },
+        {
+          "id": "lng",
+          "name": "Longitude",
+          "type": "Float",
+          "value": 2.344,
+          "bindable": true
+        },
+        {
+          "id": "zoom",
+          "name": "Zoom",
+          "type": "Float",
+          "value": 13,
+          "bindable": true
         }
       ]
-    }
-  ],
-
-  "synchronization": [
-    {
-      "id": "synchroImages",
-      "name": "Synchronize images",
-      "locale_name": {
-        "fr_FR": "Synchroniser images"
-      }
-    }
-  ],
-
-  "resources": [
-    {
-      "id": "my_image.png",
-      "type": "Image",
-      "localization": false
     }
   ]
 }
