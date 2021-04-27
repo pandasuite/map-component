@@ -2646,6 +2646,11 @@ follow-redirects@^1.0.0:
   dependencies:
     debug "^3.0.0"
 
+font-awesome@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
+  integrity sha1-j6jPBBGhoxr9B7BtKQK7n8gVoTM=
+
 for-in@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
@@ -3738,6 +3743,11 @@ leaflet-geosearch@^3.3.1:
   integrity sha512-Hzs6Jday7jqe3lvZrw5sfDpiAKzU83RfewAqQIj4hdN9IsmEs7mNhwwMXUr/5IoKUwJ6p5Db4gtTyxaeizOaTA==
   optionalDependencies:
     leaflet "^1.6.0"
+
+leaflet.locatecontrol@^0.73.0:
+  version "0.73.0"
+  resolved "https://registry.yarnpkg.com/leaflet.locatecontrol/-/leaflet.locatecontrol-0.73.0.tgz#768d9edb0470f86c913ea6c2a70ec62380fd45c5"
+  integrity sha512-e6v6SyDU2nzG5AiH80eH7qhXw5J+EfgmEFHkuzTRC9jqCSbfAm/3HlZDuoa9WYsaZbn5ovvqNeaLW/JSMsgg5g==
 
 leaflet@^1.6.0, leaflet@^1.7.1:
   version "1.7.1"

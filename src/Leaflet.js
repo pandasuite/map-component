@@ -1,8 +1,11 @@
 import PandaBridge from 'pandasuite-bridge';
 
 import * as L from 'leaflet';
+import 'leaflet.locatecontrol';
 
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 
 import each from 'lodash/each';
 
@@ -18,6 +21,7 @@ export default class Leaflet {
     this.layersLookup = {};
 
     this.setupMapLayer();
+    this.locate = this.setupLocate();
     this.setupMarkers();
     this.setupHooks();
   }
@@ -58,6 +62,21 @@ export default class Leaflet {
     });
   }
 
+  setupLocate() {
+    if (this.properties.geolocation) {
+      const locate = L.control.locate({
+        locateOptions: {
+          enableHighAccuracy: true,
+          showPopup: false,
+          setView: this.properties.setView === 'false' ? false : this.properties.setView,
+        },
+      });
+      this.map.addControl(locate);
+      return locate;
+    }
+    return null;
+  }
+
   setupMarkers() {
     this.markers.forEach((marker) => {
       const layer = geoJSONToLayer(marker.data);
@@ -87,6 +106,12 @@ export default class Leaflet {
 
   updateProperties(properties) {
     this.properties = properties;
+    this.map.removeLayer(this.mapLayer);
+    if (this.locate) {
+      this.map.removeControl(this.locate);
+    }
+    this.setupMapLayer();
+    this.locate = this.setupLocate();
   }
 
   updateMarkers(markers) {

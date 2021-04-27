@@ -198,10 +198,6 @@
         {
           "id": "Mapbox",
           "name": "Mapbox"
-        },
-        {
-          "id": "GoogleMaps",
-          "name": "Google Maps"
         }
       ]
     },
@@ -277,6 +273,64 @@
       "type": "String",
       "value": "mapbox://styles/YOUR_USERNAME/YOUR_STYLE_ID",
       "hidden": "properties.type.value != 'Mapbox' || properties.mapboxStyle.value != 'custom'"
+    },
+    {
+      "id": "geolocation",
+      "name": "Show user's location",
+      "locale_name": {
+        "fr_FR": "Afficher la localisation de l'utilisateur"
+      },
+      "type": "Boolean",
+      "value": false,
+      "style": "switch",
+      "separator": true
+    },
+    {
+      "id": "setView",
+      "name": "Map control",
+      "locale_name": {
+        "fr_FR": "Contrôle de la carte"
+      },
+      "type": "Dropdown",
+      "value": "untilPanOrZoom",
+      "items": [
+        {
+          "id": "false",
+          "name": "None",
+          "locale_name": {
+            "fr_FR": "Aucun"
+          }
+        },
+        {
+          "id": "once",
+          "name": "Just once",
+          "locale_name": {
+            "fr_FR": "Une seule fois"
+          }
+        },
+        {
+          "id": "always",
+          "name": "Always",
+          "locale_name": {
+            "fr_FR": "Toujours"
+          }
+        },
+        {
+          "id": "untilPan",
+          "name": "Until pan",
+          "locale_name": {
+            "fr_FR": "Jusqu'à un déplacement"
+          }
+        },
+        {
+          "id": "untilPanOrZoom",
+          "name": "Until pan or zoom",
+          "locale_name": {
+            "fr_FR": "Jusqu'à un déplacement ou zoom"
+          }
+        }
+      ],
+      "hidden": "properties.geolocation.value != true"
     }
   ],
 

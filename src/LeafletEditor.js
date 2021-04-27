@@ -3,10 +3,13 @@ import PandaBridge from 'pandasuite-bridge';
 import * as L from 'leaflet';
 import '@geoman-io/leaflet-geoman-free';
 import { AlgoliaProvider, GeoSearchControl } from 'leaflet-geosearch';
+import 'leaflet.locatecontrol';
 
 import 'leaflet/dist/leaflet.css';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import 'leaflet-geosearch/dist/geosearch.css';
+import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 
 import each from 'lodash/each';
 import findIndex from 'lodash/findIndex';
@@ -32,6 +35,7 @@ export default class LeafletEditor {
 
     this.setupMapLayer();
     this.setupGeoSearch();
+    this.locate = this.setupLocate();
     this.setupGeoman();
     this.setupMarkers();
     this.setupHooks();
@@ -161,6 +165,21 @@ export default class LeafletEditor {
     });
   }
 
+  setupLocate() {
+    if (this.properties.geolocation) {
+      const locate = L.control.locate({
+        locateOptions: {
+          enableHighAccuracy: true,
+          showPopup: false,
+          setView: this.properties.setView === 'false' ? false : this.properties.setView,
+        },
+      });
+      this.map.addControl(locate);
+      return locate;
+    }
+    return null;
+  }
+
   setupGeoSearch() {
     const provider = new AlgoliaProvider();
 
@@ -208,7 +227,11 @@ export default class LeafletEditor {
   updateProperties(properties) {
     this.properties = properties;
     this.map.removeLayer(this.mapLayer);
+    if (this.locate) {
+      this.map.removeControl(this.locate);
+    }
     this.setupMapLayer();
+    this.locate = this.setupLocate();
   }
 
   updateMarkers(markers) {
