@@ -53,6 +53,11 @@ export const setupLayerFromMarker = (layer, marker) => {
       layer.setStyle(style);
     }
   }
+  if (isEmpty(marker.popup)) {
+    layer.unbindPopup();
+  } else {
+    layer.bindPopup(marker.popup);
+  }
 };
 
 export const layerToGeoJSON = (layer) => {

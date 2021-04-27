@@ -124,6 +124,14 @@
             "type": "Float",
             "value": 0.2,
             "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon'"
+          },
+          {
+            "id": "popup",
+            "name": "Popup",
+            "locale_name": {
+              "fr_FR": "Popup"
+            },
+            "type": "String"
           }
         ]
       }
@@ -176,6 +184,10 @@
     },
     {
       "id": "type",
+      "name": "Provider",
+      "locale_name": {
+        "fr_FR": "Fournisseur"
+      },
       "type": "Dropdown",
       "value": "OpenStreetMap",
       "items": [
@@ -186,6 +198,10 @@
         {
           "id": "Mapbox",
           "name": "Mapbox"
+        },
+        {
+          "id": "GoogleMaps",
+          "name": "Google Maps"
         }
       ]
     },
@@ -207,6 +223,10 @@
     },
     {
       "id": "mapboxStyle",
+      "name": "Style",
+      "locale_name": {
+        "fr_FR": "Style"
+      },
       "type": "Dropdown",
       "value": "mapbox://styles/mapbox/streets-v11",
       "items": [
