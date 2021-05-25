@@ -331,6 +331,16 @@
         }
       ],
       "hidden": "properties.geolocation.value != true"
+    },
+    {
+      "id": "centerMarker",
+      "name": "Show center pin",
+      "locale_name": {
+        "fr_FR": "Afficher l'épingle du centre"
+      },
+      "type": "Boolean",
+      "value": false,
+      "separator": true
     }
   ],
 

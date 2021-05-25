@@ -21,6 +21,7 @@ export default class Leaflet {
     this.layersLookup = {};
 
     this.setupMapLayer();
+    this.setupCenter();
     this.locate = this.setupLocate();
     this.setupMarkers();
     this.setupHooks();
@@ -52,6 +53,15 @@ export default class Leaflet {
   setupMapLayer() {
     this.mapLayer = this.getTileLayerFromProps();
     this.mapLayer.addTo(this.map);
+  }
+
+  setupCenter() {
+    if (this.properties.centerMarker) {
+      this.centerMarker = L.marker([
+        this.properties.lat,
+        this.properties.lng,
+      ]).addTo(this.map);
+    }
   }
 
   attachEventsToLayer(layer) {
@@ -89,6 +99,11 @@ export default class Leaflet {
   setupHooks() {
     this.map.on('moveend', () => {
       const center = this.map.getCenter();
+
+      if (this.centerMarker) {
+        this.centerMarker.setLatLng(new L.LatLng(center.lat, center.lng));
+      }
+
       const schema = {
         lat: center.lat,
         lng: center.lng,
@@ -107,10 +122,14 @@ export default class Leaflet {
   updateProperties(properties) {
     this.properties = properties;
     this.map.removeLayer(this.mapLayer);
+    if (this.centerMarker) {
+      this.map.removeLayer(this.centerMarker);
+    }
     if (this.locate) {
       this.map.removeControl(this.locate);
     }
     this.setupMapLayer();
+    this.setupCenter();
     this.locate = this.setupLocate();
   }
 
