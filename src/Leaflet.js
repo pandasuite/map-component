@@ -27,12 +27,21 @@ export default class Leaflet {
     this.setupHooks();
   }
 
+  getMapBoxStyle() {
+    let style = this.properties.mapboxStyle;
+
+    if (style === 'custom') {
+      style = this.properties.mapboxStyleCustom;
+    }
+    return style.replace('mapbox://styles/', '');
+  }
+
   getTileLayerFromProps() {
     switch (this.properties.type) {
       case 'Mapbox':
         return L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
           attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-          id: this.properties.mapboxStyle.replace('mapbox://styles/', ''),
+          id: this.getMapBoxStyle().replace('mapbox://styles/', ''),
           tileSize: 512,
           zoomOffset: -1,
           accessToken: this.properties.mapboxAccessToken,
