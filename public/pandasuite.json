@@ -184,9 +184,9 @@
     },
     {
       "id": "type",
-      "name": "Provider",
+      "name": "Map Provider",
       "locale_name": {
-        "fr_FR": "Fournisseur"
+        "fr_FR": "Fournisseur de carte"
       },
       "type": "Dropdown",
       "value": "OpenStreetMap",
@@ -276,9 +276,9 @@
     },
     {
       "id": "geolocation",
-      "name": "Show user's location",
+      "name": "Show user location",
       "locale_name": {
-        "fr_FR": "Afficher la localisation de l'utilisateur"
+        "fr_FR": "Localisation utilisateur"
       },
       "type": "Boolean",
       "value": false,
