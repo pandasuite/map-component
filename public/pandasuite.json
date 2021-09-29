@@ -276,13 +276,12 @@
     },
     {
       "id": "geolocation",
-      "name": "Show user location",
+      "name": "User location",
       "locale_name": {
         "fr_FR": "Localisation utilisateur"
       },
       "type": "Boolean",
       "value": false,
-      "style": "switch",
       "separator": true
     },
     {
