@@ -276,7 +276,8 @@
         "fr_FR": "URL"
       },
       "value": "mapbox://styles/YOUR_USERNAME/YOUR_STYLE_ID",
-      "hidden": "properties.type.value != 'Mapbox' || properties.mapboxStyle.value != 'custom'"
+      "hidden": "properties.type.value != 'Mapbox' || properties.mapboxStyle.value != 'custom'",
+      "required": true
     },
     {
       "id": "geolocation",
