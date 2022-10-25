@@ -2,7 +2,7 @@ import PandaBridge from 'pandasuite-bridge';
 
 import * as L from 'leaflet';
 import '@geoman-io/leaflet-geoman-free';
-import { AlgoliaProvider, GeoSearchControl } from 'leaflet-geosearch';
+import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 import 'leaflet.locatecontrol';
 
 import 'leaflet/dist/leaflet.css';
@@ -200,7 +200,7 @@ export default class LeafletEditor {
   }
 
   setupGeoSearch() {
-    const provider = new AlgoliaProvider();
+    const provider = new OpenStreetMapProvider();
 
     this.map.addControl(
       new GeoSearchControl({
