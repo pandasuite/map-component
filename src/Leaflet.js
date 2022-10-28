@@ -15,9 +15,11 @@ patchDefaultIcons();
 
 export default class Leaflet {
   constructor(properties, markers) {
+    const { center } = properties;
+
     this.properties = properties;
     this.markers = markers;
-    this.map = L.map('map').setView([properties.lat, properties.lng], properties.zoom);
+    this.map = L.map('map').setView([center.lat, center.lng], properties.zoom);
     this.layersLookup = {};
 
     this.setupMapLayer();
@@ -66,9 +68,11 @@ export default class Leaflet {
 
   setupCenter() {
     if (this.properties.centerMarker) {
+      const { center } = this.properties;
+
       this.centerMarker = L.marker([
-        this.properties.lat,
-        this.properties.lng,
+        center.lat,
+        center.lng,
       ]).addTo(this.map);
     }
   }
@@ -110,21 +114,31 @@ export default class Leaflet {
       const center = this.map.getCenter();
 
       const schema = {
-        lat: center.lat,
-        lng: center.lng,
+        center: {
+          type: 'Coord',
+          value: {
+            lat: center.lat,
+            lng: center.lng,
+          },
+        },
         zoom: this.map.getZoom(),
       };
 
       PandaBridge.send('mapChanged', [schema]);
       PandaBridge.send(PandaBridge.UPDATED, {
         queryable: {
-          map: schema,
+          schema,
         },
       });
     });
   }
 
   updateProperties(properties) {
+    const { center, zoom } = this.properties;
+    const mapBoundsChanged = center.lat !== properties.center.lat
+      || center.lng !== properties.center.lng
+      || zoom !== properties.zoom;
+
     this.properties = properties;
     this.map.removeLayer(this.mapLayer);
     if (this.centerMarker) {
@@ -135,6 +149,9 @@ export default class Leaflet {
     }
     this.setupMapLayer();
     this.setupCenter();
+    if (mapBoundsChanged) {
+      this.setMapView(properties);
+    }
     this.locate = this.setupLocate();
   }
 
@@ -192,7 +209,7 @@ export default class Leaflet {
     }
   }
 
-  setMapView({ lat, lng, zoom }) {
-    this.map.setView([lat, lng], zoom);
+  setMapView({ center, zoom }) {
+    this.map.setView([center.lat, center.lng], zoom);
   }
 }

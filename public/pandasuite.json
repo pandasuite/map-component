@@ -152,19 +152,13 @@
 
   "properties": [
     {
-      "id": "lat",
-      "name": "Latitude",
-      "type": "Float",
-      "value": 48.861,
-      "hidden": true,
-      "bindable": true
-    },
-    {
-      "id": "lng",
-      "name": "Longitude",
-      "type": "Float",
-      "value": 2.344,
-      "hidden": true,
+      "id": "center",
+      "name": "Center",
+      "type": "Coord",
+      "value": {
+        "lat": 48.861,
+        "lng": 2.344
+      },
       "bindable": true
     },
     {
@@ -172,7 +166,6 @@
       "name": "Zoom",
       "type": "Float",
       "value": 13,
-      "hidden": true,
       "bindable": true
     },
     {
@@ -354,6 +347,28 @@
       "name": "Map Position Changed",
       "locale_name": {
         "fr_FR": "Changement de la position de la carte"
+      },
+      "queryable": {
+        "center": {
+          "type": "Coord",
+          "value": {
+            "lat": 48.853610,
+            "lng": 2.393230
+          }
+        },
+        "__desc_center": {
+          "name": "Center",
+          "locale_name": {
+            "fr_FR": "Centre"
+          }
+        },
+        "zoom": 13.0,
+        "__desc_zoom": {
+          "name": "Zoom",
+          "locale_name": {
+            "fr_FR": "Zoom"
+          }
+        }
       }
     }
   ],
@@ -367,17 +382,13 @@
       },
       "params": [
         {
-          "id": "lat",
-          "name": "Latitude",
-          "type": "Float",
-          "value": 48.861,
-          "bindable": true
-        },
-        {
-          "id": "lng",
-          "name": "Longitude",
-          "type": "Float",
-          "value": 2.344,
+          "id": "center",
+          "name": "Center",
+          "type": "Coord",
+          "value": {
+            "lat": 48.861,
+            "lng": 2.344
+          },
           "bindable": true
         },
         {
@@ -389,5 +400,28 @@
         }
       ]
     }
-  ]
+  ],
+
+  "queryable": {
+    "center": {
+      "type": "Coord",
+      "value": {
+        "lat": 48.853610,
+        "lng": 2.393230
+      }
+    },
+    "__desc_center": {
+      "name": "Center",
+      "locale_name": {
+        "fr_FR": "Centre"
+      }
+    },
+    "zoom": 13.0,
+    "__desc_zoom": {
+      "name": "Zoom",
+      "locale_name": {
+        "fr_FR": "Zoom"
+      }
+    }
+  }
 }

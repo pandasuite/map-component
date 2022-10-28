@@ -18,6 +18,7 @@ import find from 'lodash/find';
 import {
   geoJSONToLayer, layerToGeoJSON, patchDefaultIcons, setupLayerFromMarker,
 } from './utils/Leaflet';
+import { toFixed } from './utils/Math';
 
 patchDefaultIcons();
 
@@ -28,9 +29,11 @@ const generateUniqueId = () => {
 
 export default class LeafletEditor {
   constructor(properties, markers) {
+    const { center } = properties;
+
     this.properties = properties;
     this.markers = markers;
-    this.map = L.map('map').setView([properties.lat, properties.lng], properties.zoom);
+    this.map = L.map('map').setView([center.lat, center.lng], properties.zoom);
     this.layersLookup = {};
 
     this.setupMapLayer();
@@ -81,9 +84,11 @@ export default class LeafletEditor {
 
   setupCenter() {
     if (this.properties.centerMarker) {
+      const { center } = this.properties;
+
       this.centerMarker = L.marker([
-        this.properties.lat,
-        this.properties.lng,
+        center.lat,
+        center.lng,
       ], { pmIgnore: true }).addTo(this.map);
     }
   }
@@ -231,12 +236,11 @@ export default class LeafletEditor {
       PandaBridge.send(PandaBridge.UPDATED, {
         properties: [
           {
-            id: 'lat',
-            value: center.lat,
-          },
-          {
-            id: 'lng',
-            value: center.lng,
+            id: 'center',
+            value: {
+              lat: toFixed(center.lat, 6),
+              lng: toFixed(center.lng, 6),
+            },
           },
           {
             id: 'zoom',
@@ -248,6 +252,11 @@ export default class LeafletEditor {
   }
 
   updateProperties(properties) {
+    const { center, zoom } = this.properties;
+    const mapBoundsChanged = center.lat !== properties.center.lat
+      || center.lng !== properties.center.lng
+      || zoom !== properties.zoom;
+
     this.properties = properties;
     this.map.removeLayer(this.mapLayer);
     if (this.centerMarker) {
@@ -258,6 +267,9 @@ export default class LeafletEditor {
     }
     this.setupMapLayer();
     this.setupCenter();
+    if (mapBoundsChanged) {
+      this.setMapView(properties);
+    }
     this.locate = this.setupLocate();
   }
 
@@ -316,7 +328,7 @@ export default class LeafletEditor {
     // }
   }
 
-  setMapView({ lat, lng, zoom }) {
-    this.map.setView([lat, lng], zoom);
+  setMapView({ center, zoom }) {
+    this.map.setView([center.lat, center.lng], zoom);
   }
 }
