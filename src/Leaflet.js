@@ -126,9 +126,7 @@ export default class Leaflet {
 
       PandaBridge.send('mapChanged', [schema]);
       PandaBridge.send(PandaBridge.UPDATED, {
-        queryable: {
-          schema,
-        },
+        queryable: schema,
       });
     });
   }
