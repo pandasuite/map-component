@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 import * as L from 'leaflet';
 
@@ -7,9 +8,10 @@ import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
 import isEmpty from 'lodash/isEmpty';
 import pickBy from 'lodash/pickBy';
+import { toFixed } from './Math';
 
 export const patchDefaultIcons = () => {
-// eslint-disable-next-line no-underscore-dangle
+  // eslint-disable-next-line no-underscore-dangle
   delete L.Icon.Default.prototype._getIconUrl;
   L.Icon.Default.mergeOptions({
     iconRetinaUrl,
@@ -19,12 +21,17 @@ export const patchDefaultIcons = () => {
 };
 
 const extractStyle = (marker) => {
-  const {
-    color, weight, opacity, fillColor, fillOpacity,
-  } = marker;
-  const style = pickBy({
-    color, weight, opacity, fillColor, fillOpacity,
-  }, (v) => v !== undefined && v !== null);
+  const { color, weight, opacity, fillColor, fillOpacity } = marker;
+  const style = pickBy(
+    {
+      color,
+      weight,
+      opacity,
+      fillColor,
+      fillOpacity,
+    },
+    (v) => v !== undefined && v !== null,
+  );
 
   if (isEmpty(style)) {
     return null;
@@ -36,27 +43,55 @@ export const setupLayerFromMarker = (layer, marker) => {
   // eslint-disable-next-line no-param-reassign
   layer.uniqueId = marker.id;
 
+  const {
+    customIcon,
+    iconUrl: iconUrlMarker,
+    iconWidth = 25,
+    iconHeight = 41,
+    iconAnchorX = 12,
+    iconAnchorY = 41,
+    latlng: { lat, lng } = {},
+    radius,
+    showPopup,
+    popup,
+  } = marker;
+
   if (layer instanceof L.Marker) {
-    if (isEmpty(marker.iconUrl) && !(layer.getIcon() instanceof L.Icon.Default)) {
+    if (customIcon && !isEmpty(iconUrlMarker)) {
+      layer.setIcon(
+        L.icon({
+          iconUrl: iconUrlMarker,
+          iconSize: [iconWidth, iconHeight],
+          iconAnchor: [iconAnchorX, iconAnchorY],
+        }),
+      );
+    } else if (!customIcon && !(layer.getIcon() instanceof L.Icon.Default)) {
       layer.setIcon(new L.Icon.Default());
-    } else if (!isEmpty(marker.iconUrl)) {
-      layer.setIcon(L.icon({
-        iconUrl: marker.iconUrl,
-        iconSize: [marker.iconWidth, marker.iconHeight],
-        iconAnchor: [marker.iconAnchorX, marker.iconAnchorY],
-      }));
     }
-  } else if (layer instanceof L.Path) {
+    if (lat && lng) {
+      layer.setLatLng([lat, lng]);
+    }
+  } else if (layer instanceof L.Circle || layer instanceof L.CircleMarker) {
+    if (lat && lng) {
+      layer.setLatLng([lat, lng]);
+    }
+    if (radius) {
+      layer.setRadius(radius);
+    }
+  }
+
+  if (layer instanceof L.Path) {
     const style = extractStyle(marker);
 
     if (style) {
       layer.setStyle(style);
     }
   }
-  if (isEmpty(marker.popup)) {
-    layer.unbindPopup();
+
+  if (showPopup) {
+    layer.bindPopup(popup);
   } else {
-    layer.bindPopup(marker.popup);
+    layer.unbindPopup();
   }
 };
 
@@ -109,10 +144,14 @@ export const geoJSONToLayer = (geo) => {
     },
     pointToLayer(feature, latlng) {
       switch (feature.properties.type) {
-        case 'marker': return new L.Marker(latlng);
-        case 'circle': return new L.Circle(latlng, feature.properties.options);
-        case 'circlemarker': return new L.CircleMarker(latlng, feature.properties.options);
-        default: return null;
+        case 'marker':
+          return new L.Marker(latlng);
+        case 'circle':
+          return new L.Circle(latlng, feature.properties.options);
+        case 'circlemarker':
+          return new L.CircleMarker(latlng, feature.properties.options);
+        default:
+          return null;
       }
     },
   });
@@ -141,4 +180,27 @@ export const geoJSONToLayer = (geo) => {
     default:
       return null;
   }
+};
+
+export const syncMarkerWithLayer = (marker, layer) => {
+  marker.data = layerToGeoJSON(layer);
+
+  if (
+    layer instanceof L.Marker ||
+    layer instanceof L.Circle ||
+    layer instanceof L.CircleMarker
+  ) {
+    const { lat, lng } = layer.getLatLng();
+
+    marker.latlng = {
+      lat: toFixed(lat, 6),
+      lng: toFixed(lng, 6),
+    };
+  }
+
+  if (layer instanceof L.Circle || layer instanceof L.CircleMarker) {
+    marker.radius = layer.getRadius();
+  }
+
+  return marker;
 };

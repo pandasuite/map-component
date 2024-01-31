@@ -25,7 +25,45 @@
     "markers": [
       {
         "hideSystemId": true,
+        "enableSource": true,
         "params": [
+          {
+            "id": "latlng",
+            "name": "Center",
+            "locale_name": {
+              "fr_FR": "Centre"
+            },
+            "type": "Coord",
+            "value": {
+              "lat": 48.861,
+              "lng": 2.344
+            },
+            "bindable": true,
+            "hidden": "marker.data.properties.type != 'marker' && marker.data.properties.type != 'circlemarker' && marker.data.properties.type != 'circle'"
+          },
+          {
+            "id": "radius",
+            "name": "Radius",
+            "locale_name": {
+              "fr_FR": "Rayon"
+            },
+            "type": "Integer",
+            "value": 10,
+            "bindable": true,
+            "hidden": "marker.data.properties.type != 'circlemarker' && marker.data.properties.type != 'circle'"
+          },
+          {
+            "id": "customIcon",
+            "name": "Custom icon",
+            "locale_name": {
+              "fr_FR": "Icône personnalisée"
+            },
+            "type": "Boolean",
+            "value": false,
+            "hidden": "marker.data.properties.type != 'marker'",
+            "bindable": true,
+            "separator": true
+          },
           {
             "id": "iconUrl",
             "name": "Icon URL",
@@ -33,7 +71,9 @@
               "fr_FR": "URL de l'icône"
             },
             "type": "String",
-            "hidden": "marker.data.properties.type != 'marker'"
+            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon",
+            "required": true,
+            "bindable": true
           },
           {
             "id": "iconWidth",
@@ -43,7 +83,12 @@
             },
             "type": "Integer",
             "value": 25,
-            "hidden": "marker.data.properties.type != 'marker'"
+            "restrict": {
+              "min": 1
+            },
+            "required": true,
+            "bindable": true,
+            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon"
           },
           {
             "id": "iconHeight",
@@ -53,7 +98,12 @@
             },
             "type": "Integer",
             "value": 41,
-            "hidden": "marker.data.properties.type != 'marker'"
+            "restrict": {
+              "min": 1
+            },
+            "required": true,
+            "bindable": true,
+            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon"
           },
           {
             "id": "iconAnchorX",
@@ -63,7 +113,12 @@
             },
             "type": "Float",
             "value": 12,
-            "hidden": "marker.data.properties.type != 'marker'"
+            "restrict": {
+              "min": 1
+            },
+            "required": true,
+            "bindable": true,
+            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon"
           },
           {
             "id": "iconAnchorY",
@@ -73,7 +128,11 @@
             },
             "type": "Float",
             "value": 41,
-            "hidden": "marker.data.properties.type != 'marker'"
+            "restrict": {
+              "min": 1
+            },
+            "bindable": true,
+            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon"
           },
           {
             "id": "color",
@@ -83,7 +142,9 @@
             },
             "type": "Color",
             "value": "#3388ff",
-            "hidden": "marker.data.properties.type == 'marker' || marker.data.properties.type == 'circlemarker'"
+            "bindable": true,
+            "hidden": "marker.data.properties.type == 'marker'",
+            "separator": true
           },
           {
             "id": "weight",
@@ -93,7 +154,11 @@
             },
             "type": "Integer",
             "value": 3,
-            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon'"
+            "restrict": {
+              "min": 1
+            },
+            "bindable": true,
+            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon' && marker.data.properties.type != 'circlemarker'"
           },
           {
             "id": "opacity",
@@ -103,7 +168,14 @@
             },
             "type": "Float",
             "value": 1.0,
-            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon'"
+            "restrict": {
+              "min": 0.0,
+              "max": 1.0,
+              "step": 0.1,
+              "stepShift": 0.2
+            },
+            "bindable": true,
+            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon' && marker.data.properties.type != 'circlemarker'"
           },
           {
             "id": "fillColor",
@@ -113,7 +185,9 @@
             },
             "type": "Color",
             "value": "#3388ff",
-            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon'"
+            "bindable": true,
+            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon' && marker.data.properties.type != 'circlemarker'",
+            "separator": true
           },
           {
             "id": "fillOpacity",
@@ -123,15 +197,35 @@
             },
             "type": "Float",
             "value": 0.2,
-            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon'"
+            "restrict": {
+              "min": 0.0,
+              "max": 1.0,
+              "step": 0.1,
+              "stepShift": 0.2
+            },
+            "bindable": true,
+            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon' && marker.data.properties.type != 'circlemarker'"
+          },
+          {
+            "id": "showPopup",
+            "name": "Show popup",
+            "locale_name": {
+              "fr_FR": "Afficher la popup"
+            },
+            "type": "Boolean",
+            "value": false,
+            "bindable": true,
+            "separator": true
           },
           {
             "id": "popup",
-            "name": "Popup",
+            "name": "Message",
             "locale_name": {
-              "fr_FR": "Popup"
+              "fr_FR": "Message"
             },
-            "type": "String"
+            "type": "String",
+            "hidden": "!marker.showPopup",
+            "bindable": true
           }
         ]
       }
@@ -352,8 +446,8 @@
         "center": {
           "type": "Coord",
           "value": {
-            "lat": 48.853610,
-            "lng": 2.393230
+            "lat": 48.85361,
+            "lng": 2.39323
           }
         },
         "__desc_center": {
@@ -406,8 +500,8 @@
     "center": {
       "type": "Coord",
       "value": {
-        "lat": 48.853610,
-        "lng": 2.393230
+        "lat": 48.85361,
+        "lng": 2.39323
       }
     },
     "__desc_center": {

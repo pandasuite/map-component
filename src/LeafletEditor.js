@@ -10,21 +10,28 @@ import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css';
 import 'font-awesome/css/font-awesome.min.css';
+import './css/editor.css';
 
 import each from 'lodash/each';
 import findIndex from 'lodash/findIndex';
 import find from 'lodash/find';
 
 import {
-  geoJSONToLayer, layerToGeoJSON, patchDefaultIcons, setupLayerFromMarker,
+  geoJSONToLayer,
+  patchDefaultIcons,
+  setupLayerFromMarker,
+  syncMarkerWithLayer,
 } from './utils/Leaflet';
+import { addBounceAnimation } from './utils/Animation';
 import { toFixed } from './utils/Math';
 
 patchDefaultIcons();
 
 const generateUniqueId = () => {
   const chr4 = () => Math.random().toString(16).slice(-4);
-  return `${chr4() + chr4()}-${chr4()}-${chr4()}-${chr4()}-${chr4()}${chr4()}${chr4()}`;
+  return `${
+    chr4() + chr4()
+  }-${chr4()}-${chr4()}-${chr4()}-${chr4()}${chr4()}${chr4()}`;
 };
 
 export default class LeafletEditor {
@@ -57,23 +64,35 @@ export default class LeafletEditor {
   getTileLayerFromProps() {
     switch (this.properties.type) {
       case 'Mapbox':
-        return L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-          id: this.getMapBoxStyle().replace('mapbox://styles/', ''),
-          tileSize: 512,
-          zoomOffset: -1,
-          accessToken: this.properties.mapboxAccessToken,
-        });
+        return L.tileLayer(
+          'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
+          {
+            attribution:
+              'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            id: this.getMapBoxStyle().replace('mapbox://styles/', ''),
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: this.properties.mapboxAccessToken,
+          },
+        );
 
       case 'GoogleMaps':
-        return L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        });
+        return L.tileLayer(
+          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          {
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          },
+        );
 
       default:
-        return L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        });
+        return L.tileLayer(
+          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          {
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          },
+        );
     }
   }
 
@@ -86,10 +105,9 @@ export default class LeafletEditor {
     if (this.properties.centerMarker) {
       const { center } = this.properties;
 
-      this.centerMarker = L.marker([
-        center.lat,
-        center.lng,
-      ], { pmIgnore: true }).addTo(this.map);
+      this.centerMarker = L.marker([center.lat, center.lng], {
+        pmIgnore: true,
+      }).addTo(this.map);
     }
   }
 
@@ -98,10 +116,8 @@ export default class LeafletEditor {
 
     // eslint-disable-next-line no-param-reassign
     layer.uniqueId = uniqueId;
-    const marker = {
-      id: uniqueId,
-      data: layerToGeoJSON(layer),
-    };
+    const marker = syncMarkerWithLayer({ id: uniqueId }, layer);
+
     this.markers.push(marker);
 
     /* Don't pass an array for updating only the existing marker */
@@ -123,7 +139,7 @@ export default class LeafletEditor {
     const marker = find(this.markers, ['id', layer.uniqueId]);
 
     if (marker) {
-      marker.data = layerToGeoJSON(layer);
+      syncMarkerWithLayer(marker, layer);
       PandaBridge.send(PandaBridge.UPDATED, { markers: marker });
     }
   }
@@ -195,7 +211,10 @@ export default class LeafletEditor {
         locateOptions: {
           enableHighAccuracy: true,
           showPopup: false,
-          setView: this.properties.setView === 'false' ? false : this.properties.setView,
+          setView:
+            this.properties.setView === 'false'
+              ? false
+              : this.properties.setView,
         },
       });
       this.map.addControl(locate);
@@ -253,9 +272,10 @@ export default class LeafletEditor {
 
   updateProperties(properties) {
     const { center, zoom } = this.properties;
-    const mapBoundsChanged = center.lat !== properties.center.lat
-      || center.lng !== properties.center.lng
-      || zoom !== properties.zoom;
+    const mapBoundsChanged =
+      center.lat !== properties.center.lat ||
+      center.lng !== properties.center.lng ||
+      zoom !== properties.zoom;
 
     this.properties = properties;
     this.map.removeLayer(this.mapLayer);
@@ -315,6 +335,8 @@ export default class LeafletEditor {
   selectMarkers({ id }) {
     // eslint-disable-next-line no-unused-vars
     const layer = this.layersLookup[id];
+
+    addBounceAnimation(layer);
 
     // if (layer) {
     //   let bounds;
