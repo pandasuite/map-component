@@ -35,7 +35,7 @@ const generateUniqueId = () => {
 };
 
 export default class LeafletEditor {
-  constructor(properties, markers, fitBounds = false) {
+  constructor(properties, markers, fitBounds = null) {
     const { center } = properties;
 
     this.properties = properties;
@@ -51,7 +51,7 @@ export default class LeafletEditor {
     this.setupMarkers();
     this.setupHooks();
     if (fitBounds) {
-      this.fitMapView({ animate: false });
+      this.fitMapView({ ...fitBounds, animate: false });
     }
   }
 

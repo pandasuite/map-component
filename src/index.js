@@ -3,7 +3,7 @@ import PandaBridge from 'pandasuite-bridge';
 import isEqual from 'lodash/isEqual';
 
 let mapHandler = null;
-let initialFitBounds = false;
+let initialFitBounds = null;
 
 let properties = null;
 let markers = null;
@@ -78,11 +78,14 @@ PandaBridge.init(() => {
     }
   });
 
-  PandaBridge.listen('fitBounds', () => {
+  PandaBridge.listen('fitBounds', (args) => {
+    const [params] = args || {};
+    const { paddingVertical = 0, paddingHorizontal = 0 } = params || {};
+
     if (mapHandler != null) {
-      mapHandler.fitMapView();
+      mapHandler.fitMapView({ padding: [paddingVertical, paddingHorizontal] });
     } else {
-      initialFitBounds = true;
+      initialFitBounds = { padding: [paddingVertical, paddingHorizontal] };
     }
   });
 });

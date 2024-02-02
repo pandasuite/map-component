@@ -503,7 +503,29 @@
       "name": "Fit bounds",
       "locale_name": {
         "fr_FR": "Ajuster les limites"
-      }
+      },
+      "params": [
+        {
+          "id": "paddingVertical",
+          "name": "Vertical padding",
+          "type": "Integer",
+          "value": 0,
+          "restrict": {
+            "min": 0
+          },
+          "bindable": true
+        },
+        {
+          "id": "paddingHorizontal",
+          "name": "Horizontal padding",
+          "type": "Integer",
+          "value": 0,
+          "restrict": {
+            "min": 0
+          },
+          "bindable": true
+        }
+      ]
     }
   ],
 

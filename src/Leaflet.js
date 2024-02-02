@@ -18,7 +18,7 @@ import {
 patchDefaultIcons();
 
 export default class Leaflet {
-  constructor(properties, markers, fitBounds = false) {
+  constructor(properties, markers, fitBounds = null) {
     const { center } = properties;
 
     this.properties = properties;
@@ -32,7 +32,7 @@ export default class Leaflet {
     this.setupMarkers();
     this.setupHooks();
     if (fitBounds) {
-      this.fitMapView({ animate: false });
+      this.fitMapView({ ...fitBounds, animate: false });
     }
   }
 
