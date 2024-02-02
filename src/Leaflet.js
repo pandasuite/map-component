@@ -9,7 +9,11 @@ import 'font-awesome/css/font-awesome.min.css';
 
 import each from 'lodash/each';
 
-import { geoJSONToLayer, patchDefaultIcons, setupLayerFromMarker } from './utils/Leaflet';
+import {
+  geoJSONToLayer,
+  patchDefaultIcons,
+  setupLayerFromMarker,
+} from './utils/Leaflet';
 
 patchDefaultIcons();
 
@@ -41,23 +45,38 @@ export default class Leaflet {
   getTileLayerFromProps() {
     switch (this.properties.type) {
       case 'Mapbox':
-        return L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-          id: this.getMapBoxStyle().replace('mapbox://styles/', ''),
-          tileSize: 512,
-          zoomOffset: -1,
-          accessToken: this.properties.mapboxAccessToken,
-        });
+        return L.tileLayer(
+          'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
+          {
+            attribution:
+              'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            id: this.getMapBoxStyle().replace('mapbox://styles/', ''),
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: this.properties.mapboxAccessToken,
+          },
+        );
 
       case 'GoogleMaps':
-        return L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        });
+        return L.tileLayer(
+          'https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}?key={apiKey}',
+          {
+            id: 'google-streets',
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution:
+              'Map data &copy; <a href="https://www.google.com/maps">Google Maps</a>',
+            apiKey: this.properties.googleApiKey,
+          },
+        );
 
       default:
-        return L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        });
+        return L.tileLayer(
+          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          {
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          },
+        );
     }
   }
 
@@ -70,10 +89,7 @@ export default class Leaflet {
     if (this.properties.centerMarker) {
       const { center } = this.properties;
 
-      this.centerMarker = L.marker([
-        center.lat,
-        center.lng,
-      ]).addTo(this.map);
+      this.centerMarker = L.marker([center.lat, center.lng]).addTo(this.map);
     }
   }
 
@@ -91,7 +107,10 @@ export default class Leaflet {
         locateOptions: {
           enableHighAccuracy: true,
           showPopup: false,
-          setView: this.properties.setView === 'false' ? false : this.properties.setView,
+          setView:
+            this.properties.setView === 'false'
+              ? false
+              : this.properties.setView,
         },
       });
       this.map.addControl(locate);
@@ -133,9 +152,10 @@ export default class Leaflet {
 
   updateProperties(properties) {
     const { center, zoom } = this.properties;
-    const mapBoundsChanged = center.lat !== properties.center.lat
-      || center.lng !== properties.center.lng
-      || zoom !== properties.zoom;
+    const mapBoundsChanged =
+      center.lat !== properties.center.lat ||
+      center.lng !== properties.center.lng ||
+      zoom !== properties.zoom;
 
     this.properties = properties;
     this.map.removeLayer(this.mapLayer);

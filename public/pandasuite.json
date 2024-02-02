@@ -285,6 +285,10 @@
         {
           "id": "Mapbox",
           "name": "Mapbox"
+        },
+        {
+          "id": "GoogleMaps",
+          "name": "Google Maps"
         }
       ]
     },

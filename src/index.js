@@ -21,7 +21,11 @@ function myInit() {
   /* We use leaflet for easy editing of interactive elements */
   if (PandaBridge.isStudio) {
     setupLeafletMapEditor();
-  } else if (properties.type === 'OpenStreetMap' || properties.type === 'Mapbox') {
+  } else if (
+    properties.type === 'OpenStreetMap' ||
+    properties.type === 'Mapbox' ||
+    properties.type === 'GoogleMaps'
+  ) {
     setupLeafletMap();
   }
 }

@@ -78,10 +78,13 @@ export default class LeafletEditor {
 
       case 'GoogleMaps':
         return L.tileLayer(
-          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          'https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}?key={apiKey}',
           {
             attribution:
-              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+              'Map data &copy; <a href="https://www.google.com/maps">Google Maps</a>',
+            id: 'google-streets',
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            apiKey: this.properties.googleApiKey,
           },
         );
 
