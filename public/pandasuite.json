@@ -497,6 +497,13 @@
           "bindable": true
         }
       ]
+    },
+    {
+      "id": "fitBounds",
+      "name": "Fit bounds",
+      "locale_name": {
+        "fr_FR": "Ajuster les limites"
+      }
     }
   ],
 

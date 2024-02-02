@@ -18,7 +18,7 @@ import {
 patchDefaultIcons();
 
 export default class Leaflet {
-  constructor(properties, markers) {
+  constructor(properties, markers, fitBounds = false) {
     const { center } = properties;
 
     this.properties = properties;
@@ -31,6 +31,9 @@ export default class Leaflet {
     this.locate = this.setupLocate();
     this.setupMarkers();
     this.setupHooks();
+    if (fitBounds) {
+      this.fitMapView({ animate: false });
+    }
   }
 
   getMapBoxStyle() {
@@ -229,5 +232,19 @@ export default class Leaflet {
 
   setMapView({ center, zoom }) {
     this.map.setView([center.lat, center.lng], zoom);
+  }
+
+  fitMapView(options = {}) {
+    const bounds = new L.LatLngBounds();
+
+    this.map.eachLayer((layer) => {
+      if (layer instanceof L.Marker || layer instanceof L.Path) {
+        bounds.extend(layer.getBounds ? layer.getBounds() : layer.getLatLng());
+      }
+    });
+
+    if (bounds.isValid()) {
+      this.map.fitBounds(bounds, options);
+    }
   }
 }

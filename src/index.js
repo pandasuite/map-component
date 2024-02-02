@@ -3,18 +3,19 @@ import PandaBridge from 'pandasuite-bridge';
 import isEqual from 'lodash/isEqual';
 
 let mapHandler = null;
+let initialFitBounds = false;
 
 let properties = null;
 let markers = null;
 
 async function setupLeafletMapEditor() {
   const { default: LeafletEditor } = await import('./LeafletEditor');
-  mapHandler = new LeafletEditor(properties, markers);
+  mapHandler = new LeafletEditor(properties, markers, initialFitBounds);
 }
 
 async function setupLeafletMap() {
   const { default: Leaflet } = await import('./Leaflet');
-  mapHandler = new Leaflet(properties, markers);
+  mapHandler = new Leaflet(properties, markers, initialFitBounds);
 }
 
 function myInit() {
@@ -74,6 +75,14 @@ PandaBridge.init(() => {
 
     if (mapHandler != null && params) {
       mapHandler.setMapView(params);
+    }
+  });
+
+  PandaBridge.listen('fitBounds', () => {
+    if (mapHandler != null) {
+      mapHandler.fitMapView();
+    } else {
+      initialFitBounds = true;
     }
   });
 });
