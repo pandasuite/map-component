@@ -31,7 +31,7 @@
     "leaflet-geosearch": "^3.7.0",
     "leaflet.locatecontrol": "^0.73.0",
     "lodash": "^4.17.21",
-    "pandasuite-bridge": "^4.4.1"
+    "pandasuite-bridge": "^4.5.2"
   },
   "release-it": {
     "github": {
