@@ -183,11 +183,12 @@ export default class Leaflet {
     this.markers = markers;
 
     this.map.eachLayer((layer) => {
-      if (layer instanceof L.Marker && layer.uniqueId) {
-        markerLayers[layer.uniqueId] = { layer };
-      }
-      if (layer instanceof L.Path) {
-        pathLayers[layer.uniqueId] = { layer };
+      if (layer.uniqueId) {
+        if (layer instanceof L.Marker) {
+          markerLayers[layer.uniqueId] = { layer };
+        } else if (layer instanceof L.Path) {
+          pathLayers[layer.uniqueId] = { layer };
+        }
       }
     });
 
@@ -197,12 +198,17 @@ export default class Leaflet {
 
         setupLayerFromMarker(layer, marker);
         delete markerLayers[marker.id];
-      }
-      if (pathLayers[marker.id]) {
+      } else if (pathLayers[marker.id]) {
         const { layer } = pathLayers[marker.id];
 
         setupLayerFromMarker(layer, marker);
         delete pathLayers[marker.id];
+      } else {
+        const layer = geoJSONToLayer(marker.data);
+
+        setupLayerFromMarker(layer, marker);
+        layer.addTo(this.map);
+        this.attachEventsToLayer(layer);
       }
     });
 
