@@ -135,6 +135,10 @@ export default class Leaflet {
     this.map.on('moveend', () => {
       const center = this.map.getCenter();
 
+      if (this.centerMarker) {
+        this.centerMarker.setLatLng(new L.LatLng(center.lat, center.lng));
+      }
+
       const schema = {
         center: {
           type: 'Coord',
