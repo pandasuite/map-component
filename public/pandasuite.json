@@ -226,6 +226,16 @@
             "type": "String",
             "hidden": "!marker.showPopup",
             "bindable": true
+          },
+          {
+            "id": "data",
+            "name": "GeoJSON",
+            "locale_name": {
+              "fr_FR": "GeoJSON"
+            },
+            "type": "JSON",
+            "separator": true,
+            "bindable": true
           }
         ]
       }

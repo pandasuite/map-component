@@ -244,9 +244,12 @@ export default class LeafletEditor {
   setupMarkers() {
     this.markers.forEach((marker) => {
       const layer = geoJSONToLayer(marker.data);
-      setupLayerFromMarker(layer, marker);
-      layer.addTo(this.map);
-      this.attachEventsToLayer(layer);
+
+      if (layer) {
+        setupLayerFromMarker(layer, marker);
+        layer.addTo(this.map);
+        this.attachEventsToLayer(layer);
+      }
     });
   }
 

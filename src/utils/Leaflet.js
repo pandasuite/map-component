@@ -80,12 +80,9 @@ export const setupLayerFromMarker = (layer, marker) => {
     }
   }
 
-  if (layer instanceof L.Path) {
-    const style = extractStyle(marker);
-
-    if (style) {
-      layer.setStyle(style);
-    }
+  const style = extractStyle(marker);
+  if (style && layer.setStyle) {
+    layer.setStyle(style);
   }
 
   if (showPopup) {
@@ -178,7 +175,7 @@ export const geoJSONToLayer = (geo) => {
     case 'circlemarker':
       return new L.CircleMarker(latlng, layer.options);
     default:
-      return null;
+      return geoLayer;
   }
 };
 
