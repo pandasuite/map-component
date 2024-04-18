@@ -21,6 +21,11 @@ async function setupLeafletMap() {
 function myInit() {
   /* We use leaflet for easy editing of interactive elements */
   if (PandaBridge.isStudio) {
+    const { scale = 1 } = PandaBridge.isStudio;
+
+    document.body.style.setProperty('--scale', scale);
+    document.body.style.setProperty('--scale-inverse', 1 / scale);
+
     setupLeafletMapEditor();
   } else if (
     properties.type === 'OpenStreetMap' ||

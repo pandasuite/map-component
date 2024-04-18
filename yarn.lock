@@ -4493,10 +4493,10 @@ pako@~1.0.5:
   resolved "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz"
   integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
 
-pandasuite-bridge@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/pandasuite-bridge/-/pandasuite-bridge-4.5.2.tgz#b15283bae3eadba4ed49ecc549946f553bf9d27b"
-  integrity sha512-qC1O2iu6mlKb1HJSyu1JmvQB5RUVTMUjak2wcxPPlXjl1M8sKqx+DaGSZnoS8D2Su8YSk3GI6MvOx9tPSKWyrg==
+pandasuite-bridge@^4.5.3:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/pandasuite-bridge/-/pandasuite-bridge-4.5.3.tgz#625e5e1dade443b797d41d04315c5cd9f8863a7a"
+  integrity sha512-JFAImxJP3eNFx8W8bGODdCKym2guzGkd8+muAAZWlNW2dG7T9lKxkYB6j2U3+PbFWBqOEZ9jWN31rzTZCmieVQ==
   dependencies:
     lodash "^4.17.21"
 
