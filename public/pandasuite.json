@@ -28,6 +28,16 @@
         "enableSource": true,
         "params": [
           {
+            "id": "visible",
+            "name": "Visible",
+            "locale_name": {
+              "fr_FR": "Visible"
+            },
+            "type": "Boolean",
+            "value": true,
+            "bindable": true
+          },
+          {
             "id": "latlng",
             "name": "Center",
             "locale_name": {

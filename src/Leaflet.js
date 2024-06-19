@@ -124,6 +124,9 @@ export default class Leaflet {
 
   setupMarkers() {
     this.markers.forEach((marker) => {
+      if (marker.visible === false) {
+        return;
+      }
       const layer = geoJSONToLayer(marker.data);
 
       if (layer) {
@@ -203,6 +206,9 @@ export default class Leaflet {
     });
 
     each(this.markers, (marker) => {
+      if (marker.visible === false) {
+        return;
+      }
       if (markerLayers[marker.id]) {
         const { layer } = markerLayers[marker.id];
 
