@@ -186,6 +186,7 @@ export default class Leaflet {
   updateMarkers(markers) {
     const markerLayers = {};
     const pathLayers = {};
+    const otherLayers = {};
 
     this.markers = markers;
 
@@ -195,6 +196,8 @@ export default class Leaflet {
           markerLayers[layer.uniqueId] = { layer };
         } else if (layer instanceof L.Path) {
           pathLayers[layer.uniqueId] = { layer };
+        } else {
+          otherLayers[layer.uniqueId] = { layer };
         }
       }
     });
@@ -215,6 +218,10 @@ export default class Leaflet {
 
         if (layer) {
           setupLayerFromMarker(layer, marker);
+          if (otherLayers[marker.id]) {
+            this.map.removeLayer(otherLayers[marker.id].layer);
+            delete otherLayers[marker.id];
+          }
           layer.addTo(this.map);
           this.attachEventsToLayer(layer);
         }
@@ -226,6 +233,10 @@ export default class Leaflet {
     });
 
     each(markerLayers, ({ layer }) => {
+      this.map.removeLayer(layer);
+    });
+
+    each(otherLayers, ({ layer }) => {
       this.map.removeLayer(layer);
     });
   }

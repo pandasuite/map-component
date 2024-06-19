@@ -132,50 +132,55 @@ export const geoJSONToLayer = (geo) => {
     features: [geo],
   };
 
-  const geoLayer = L.geoJSON(collection, {
-    style(feature) {
-      if (feature && feature.properties && feature.properties.options) {
-        return feature.properties.options;
-      }
-      return {};
-    },
-    pointToLayer(feature, latlng) {
-      switch (feature.properties.type) {
-        case 'marker':
-          return new L.Marker(latlng);
-        case 'circle':
-          return new L.Circle(latlng, feature.properties.options);
-        case 'circlemarker':
-          return new L.CircleMarker(latlng, feature.properties.options);
-        default:
-          return null;
-      }
-    },
-  });
+  try {
+    const geoLayer = L.geoJSON(collection, {
+      style(feature) {
+        if (feature && feature.properties && feature.properties.options) {
+          return feature.properties.options;
+        }
+        return {};
+      },
+      pointToLayer(feature, latlng) {
+        switch (feature.properties.type) {
+          case 'marker':
+            return new L.Marker(latlng);
+          case 'circle':
+            return new L.Circle(latlng, feature.properties.options);
+          case 'circlemarker':
+            return new L.CircleMarker(latlng, feature.properties.options);
+          default:
+            return null;
+        }
+      },
+    });
 
-  const layer = geoLayer.getLayers()[0];
-  let latlng;
+    const layer = geoLayer.getLayers()[0];
+    let latlng;
 
-  if (layer._latlng) {
-    latlng = layer.getLatLng();
-  } else {
-    latlng = layer.getLatLngs();
-  }
-  switch (layer.feature.properties.type) {
-    case 'rectangle':
-      return new L.Rectangle(latlng, layer.options);
-    case 'circle':
-      return new L.Circle(latlng, layer.options);
-    case 'polygon':
-      return new L.Polygon(latlng, layer.options);
-    case 'polyline':
-      return new L.Polyline(latlng, layer.options);
-    case 'marker':
-      return new L.Marker(latlng, layer.options);
-    case 'circlemarker':
-      return new L.CircleMarker(latlng, layer.options);
-    default:
-      return geoLayer;
+    if (layer._latlng) {
+      latlng = layer.getLatLng();
+    } else {
+      latlng = layer.getLatLngs();
+    }
+    switch (layer.feature.properties.type) {
+      case 'rectangle':
+        return new L.Rectangle(latlng, layer.options);
+      case 'circle':
+        return new L.Circle(latlng, layer.options);
+      case 'polygon':
+        return new L.Polygon(latlng, layer.options);
+      case 'polyline':
+        return new L.Polyline(latlng, layer.options);
+      case 'marker':
+        return new L.Marker(latlng, layer.options);
+      case 'circlemarker':
+        return new L.CircleMarker(latlng, layer.options);
+      default:
+        return geoLayer;
+    }
+  } catch (e) {
+    console.error(e);
+    return null;
   }
 };
 
