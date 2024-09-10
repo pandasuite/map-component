@@ -25,6 +25,7 @@
     "markers": [
       {
         "hideSystemId": true,
+        "hideAddMarkerButton": true,
         "enableSource": true,
         "params": [
           {
