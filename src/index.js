@@ -41,10 +41,10 @@ PandaBridge.init(() => {
     properties = pandaData.properties;
     markers = pandaData.markers;
 
-    if (document.readyState === 'complete') {
-      myInit();
-    } else {
+    if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', myInit, false);
+    } else {
+      myInit();
     }
   });
 
