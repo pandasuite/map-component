@@ -1,7 +1,14 @@
 {
+  "meta": {
+    "stype": "map",
+    "componentURL": "https://github.com/pandasuite/map-component/",
+    "description": "Interactive map with markers, geolocation, routes, and multiple providers (OpenStreetMap, Mapbox, Google Maps). Supports GeoJSON and dynamic marker creation from data sources.",
+    "locale_description": {
+      "fr_FR": "Carte interactive avec marqueurs, géolocalisation, itinéraires et plusieurs fournisseurs (OpenStreetMap, Mapbox, Google Maps). Supporte le GeoJSON et la création dynamique de marqueurs depuis des sources de données."
+    }
+  },
   "version": "2.0.0",
   "main": "",
-
   "system": {
     "localization": false,
     "actions": [
@@ -10,6 +17,10 @@
         "name": "Focus",
         "locale_name": {
           "fr_FR": "Focus"
+        },
+        "description": "Focus the map on a specific marker location.",
+        "locale_description": {
+          "fr_FR": "Centrer la carte sur l'emplacement d'un marqueur spécifique."
         }
       }
     ],
@@ -19,6 +30,10 @@
         "name": "Single tap/click",
         "locale_name": {
           "fr_FR": "Tape/Clic"
+        },
+        "description": "Fires when a marker is tapped or clicked on the map.",
+        "locale_description": {
+          "fr_FR": "Se déclenche quand un marqueur est touché ou cliqué sur la carte."
         }
       }
     ],
@@ -36,7 +51,11 @@
             },
             "type": "Boolean",
             "value": true,
-            "bindable": true
+            "bindable": true,
+            "description": "Whether this marker is visible on the map.",
+            "locale_description": {
+              "fr_FR": "Si ce marqueur est visible sur la carte."
+            }
           },
           {
             "id": "latlng",
@@ -50,7 +69,11 @@
               "lng": 2.344
             },
             "bindable": true,
-            "hidden": "marker.data.properties.type != 'marker' && marker.data.properties.type != 'circlemarker' && marker.data.properties.type != 'circle'"
+            "hidden": "marker.data.properties.type != 'marker' && marker.data.properties.type != 'circlemarker' && marker.data.properties.type != 'circle'",
+            "description": "GPS coordinates (latitude, longitude) of the marker. Active for marker, circle marker, and circle types.",
+            "locale_description": {
+              "fr_FR": "Coordonnées GPS (latitude, longitude) du marqueur. Actif pour les types marqueur, marqueur cercle et cercle."
+            }
           },
           {
             "id": "radius",
@@ -61,7 +84,11 @@
             "type": "Integer",
             "value": 10,
             "bindable": true,
-            "hidden": "marker.data.properties.type != 'circlemarker' && marker.data.properties.type != 'circle'"
+            "hidden": "marker.data.properties.type != 'circlemarker' && marker.data.properties.type != 'circle'",
+            "description": "Radius in meters for circle and circle marker types. Active for circle marker and circle types.",
+            "locale_description": {
+              "fr_FR": "Rayon en mètres pour les types cercle et marqueur cercle. Actif pour les types marqueur cercle et cercle."
+            }
           },
           {
             "id": "customIcon",
@@ -73,7 +100,11 @@
             "value": false,
             "hidden": "marker.data.properties.type != 'marker'",
             "bindable": true,
-            "separator": true
+            "separator": true,
+            "description": "Use a custom icon image instead of the default marker pin. Active for marker type.",
+            "locale_description": {
+              "fr_FR": "Utiliser une image d'icône personnalisée au lieu de l'épingle par défaut. Actif pour le type marqueur."
+            }
           },
           {
             "id": "iconUrl",
@@ -84,7 +115,11 @@
             "type": "String",
             "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon",
             "required": true,
-            "bindable": true
+            "bindable": true,
+            "description": "URL of the custom marker icon image. Active when custom icon is enabled.",
+            "locale_description": {
+              "fr_FR": "URL de l'image d'icône personnalisée du marqueur. Actif quand l'icône personnalisée est activée."
+            }
           },
           {
             "id": "iconWidth",
@@ -99,7 +134,11 @@
             },
             "required": true,
             "bindable": true,
-            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon"
+            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon",
+            "description": "Width in pixels of the custom marker icon. Active when custom icon is enabled.",
+            "locale_description": {
+              "fr_FR": "Largeur en pixels de l'icône personnalisée du marqueur. Actif quand l'icône personnalisée est activée."
+            }
           },
           {
             "id": "iconHeight",
@@ -114,7 +153,11 @@
             },
             "required": true,
             "bindable": true,
-            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon"
+            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon",
+            "description": "Height in pixels of the custom marker icon. Active when custom icon is enabled.",
+            "locale_description": {
+              "fr_FR": "Hauteur en pixels de l'icône personnalisée du marqueur. Actif quand l'icône personnalisée est activée."
+            }
           },
           {
             "id": "iconAnchorX",
@@ -129,7 +172,11 @@
             },
             "required": true,
             "bindable": true,
-            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon"
+            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon",
+            "description": "Horizontal anchor point of the custom icon in pixels. Active when custom icon is enabled.",
+            "locale_description": {
+              "fr_FR": "Point d'ancrage horizontal de l'icône personnalisée en pixels. Actif quand l'icône personnalisée est activée."
+            }
           },
           {
             "id": "iconAnchorY",
@@ -143,7 +190,11 @@
               "min": 1
             },
             "bindable": true,
-            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon"
+            "hidden": "marker.data.properties.type != 'marker' || !marker.customIcon",
+            "description": "Vertical anchor point of the custom icon in pixels. Active when custom icon is enabled.",
+            "locale_description": {
+              "fr_FR": "Point d'ancrage vertical de l'icône personnalisée en pixels. Actif quand l'icône personnalisée est activée."
+            }
           },
           {
             "id": "color",
@@ -155,7 +206,11 @@
             "value": "#3388ff",
             "bindable": true,
             "hidden": "marker.data.properties.type == 'marker'",
-            "separator": true
+            "separator": true,
+            "description": "Stroke color for shapes (circle, rectangle, polygon). Active for non-marker types.",
+            "locale_description": {
+              "fr_FR": "Couleur du trait pour les formes (cercle, rectangle, polygone). Actif pour les types non-marqueur."
+            }
           },
           {
             "id": "weight",
@@ -169,7 +224,11 @@
               "min": 1
             },
             "bindable": true,
-            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon' && marker.data.properties.type != 'circlemarker'"
+            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon' && marker.data.properties.type != 'circlemarker'",
+            "description": "Stroke width for shapes. Active for rectangle, circle, polygon, and circle marker types.",
+            "locale_description": {
+              "fr_FR": "Épaisseur du trait pour les formes. Actif pour les types rectangle, cercle, polygone et marqueur cercle."
+            }
           },
           {
             "id": "opacity",
@@ -186,7 +245,11 @@
               "stepShift": 0.2
             },
             "bindable": true,
-            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon' && marker.data.properties.type != 'circlemarker'"
+            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon' && marker.data.properties.type != 'circlemarker'",
+            "description": "Stroke opacity (0 to 1) for shapes. Active for rectangle, circle, polygon, and circle marker types.",
+            "locale_description": {
+              "fr_FR": "Opacité du trait (0 à 1) pour les formes. Actif pour les types rectangle, cercle, polygone et marqueur cercle."
+            }
           },
           {
             "id": "fillColor",
@@ -198,7 +261,11 @@
             "value": "#3388ff",
             "bindable": true,
             "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon' && marker.data.properties.type != 'circlemarker'",
-            "separator": true
+            "separator": true,
+            "description": "Fill color for shapes. Active for rectangle, circle, polygon, and circle marker types.",
+            "locale_description": {
+              "fr_FR": "Couleur de remplissage pour les formes. Actif pour les types rectangle, cercle, polygone et marqueur cercle."
+            }
           },
           {
             "id": "fillOpacity",
@@ -215,7 +282,11 @@
               "stepShift": 0.2
             },
             "bindable": true,
-            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon' && marker.data.properties.type != 'circlemarker'"
+            "hidden": "marker.data.properties.type != 'rectangle' && marker.data.properties.type != 'circle' && marker.data.properties.type != 'polygon' && marker.data.properties.type != 'circlemarker'",
+            "description": "Fill opacity (0 to 1) for shapes. Active for rectangle, circle, polygon, and circle marker types.",
+            "locale_description": {
+              "fr_FR": "Opacité du remplissage (0 à 1) pour les formes. Actif pour les types rectangle, cercle, polygone et marqueur cercle."
+            }
           },
           {
             "id": "showPopup",
@@ -226,7 +297,11 @@
             "type": "Boolean",
             "value": false,
             "bindable": true,
-            "separator": true
+            "separator": true,
+            "description": "Show an info popup when this marker is tapped.",
+            "locale_description": {
+              "fr_FR": "Afficher une popup d'info quand ce marqueur est touché."
+            }
           },
           {
             "id": "popup",
@@ -236,7 +311,11 @@
             },
             "type": "String",
             "hidden": "!marker.showPopup",
-            "bindable": true
+            "bindable": true,
+            "description": "HTML content of the marker popup. Active when show popup is enabled.",
+            "locale_description": {
+              "fr_FR": "Contenu HTML de la popup du marqueur. Actif quand afficher la popup est activé."
+            }
           },
           {
             "id": "data",
@@ -246,9 +325,17 @@
             },
             "type": "JSON",
             "separator": true,
-            "bindable": true
+            "bindable": true,
+            "description": "GeoJSON data for this marker, enabling complex geographic shapes.",
+            "locale_description": {
+              "fr_FR": "Données GeoJSON pour ce marqueur, permettant des formes géographiques complexes."
+            }
           }
-        ]
+        ],
+        "description": "Map markers representing points of interest, areas, or routes.",
+        "locale_description": {
+          "fr_FR": "Marqueurs de carte représentant des points d'intérêt, zones ou itinéraires."
+        }
       }
     ],
     "defaults": {
@@ -264,7 +351,6 @@
       }
     }
   },
-
   "properties": [
     {
       "id": "center",
@@ -274,21 +360,33 @@
         "lat": 48.861,
         "lng": 2.344
       },
-      "bindable": true
+      "bindable": true,
+      "description": "Default center coordinates of the map.",
+      "locale_description": {
+        "fr_FR": "Coordonnées du centre par défaut de la carte."
+      }
     },
     {
       "id": "zoom",
       "name": "Zoom",
       "type": "Float",
       "value": 13,
-      "bindable": true
+      "bindable": true,
+      "description": "Default zoom level of the map.",
+      "locale_description": {
+        "fr_FR": "Niveau de zoom par défaut de la carte."
+      }
     },
     {
       "id": "pandaApiKey",
       "name": "Google Maps API key",
       "type": "String",
       "value": "AIzaSyBtzf0Qa1brPE6V75WQfHzsxHTb11puFzM",
-      "hidden": true
+      "hidden": true,
+      "description": "Internal Google Maps API key used by PandaSuite. Hidden property.",
+      "locale_description": {
+        "fr_FR": "Clé API Google Maps interne utilisée par PandaSuite. Propriété masquée."
+      }
     },
     {
       "id": "type",
@@ -311,7 +409,11 @@
           "id": "GoogleMaps",
           "name": "Google Maps"
         }
-      ]
+      ],
+      "description": "Map tile provider (OpenStreetMap, Mapbox, or Google Maps).",
+      "locale_description": {
+        "fr_FR": "Fournisseur de tuiles cartographiques (OpenStreetMap, Mapbox ou Google Maps)."
+      }
     },
     {
       "id": "googleApiKey",
@@ -319,7 +421,11 @@
       "type": "String",
       "value": "",
       "hidden": "properties.type.value != 'GoogleMaps'",
-      "required": true
+      "required": true,
+      "description": "Google Maps API key. Active when provider is Google Maps.",
+      "locale_description": {
+        "fr_FR": "Clé API Google Maps. Actif quand le fournisseur est Google Maps."
+      }
     },
     {
       "id": "mapboxAccessToken",
@@ -327,7 +433,11 @@
       "type": "String",
       "value": "",
       "hidden": "properties.type.value != 'Mapbox'",
-      "required": true
+      "required": true,
+      "description": "Mapbox access token. Active when provider is Mapbox.",
+      "locale_description": {
+        "fr_FR": "Token d'accès Mapbox. Actif quand le fournisseur est Mapbox."
+      }
     },
     {
       "id": "mapboxStyle",
@@ -378,7 +488,11 @@
           }
         }
       ],
-      "hidden": "properties.type.value != 'Mapbox'"
+      "hidden": "properties.type.value != 'Mapbox'",
+      "description": "Mapbox map style preset. Active when provider is Mapbox.",
+      "locale_description": {
+        "fr_FR": "Style prédéfini de carte Mapbox. Actif quand le fournisseur est Mapbox."
+      }
     },
     {
       "id": "mapboxStyleCustom",
@@ -389,7 +503,11 @@
       },
       "value": "mapbox://styles/YOUR_USERNAME/YOUR_STYLE_ID",
       "hidden": "properties.type.value != 'Mapbox' || properties.mapboxStyle.value != 'custom'",
-      "required": true
+      "required": true,
+      "description": "Custom Mapbox style URL. Active when provider is Mapbox and style is set to Custom.",
+      "locale_description": {
+        "fr_FR": "URL de style Mapbox personnalisé. Actif quand le fournisseur est Mapbox et le style est sur Personnalisé."
+      }
     },
     {
       "id": "geolocation",
@@ -399,7 +517,11 @@
       },
       "type": "Boolean",
       "value": false,
-      "separator": true
+      "separator": true,
+      "description": "Enable real-time user location tracking on the map.",
+      "locale_description": {
+        "fr_FR": "Activer le suivi de la localisation de l'utilisateur en temps réel sur la carte."
+      }
     },
     {
       "id": "setView",
@@ -446,7 +568,11 @@
           }
         }
       ],
-      "hidden": "properties.geolocation.value != true"
+      "hidden": "properties.geolocation.value != true",
+      "description": "Controls how the map follows the user's location. Active when geolocation is enabled.",
+      "locale_description": {
+        "fr_FR": "Contrôle comment la carte suit la position de l'utilisateur. Actif quand la géolocalisation est activée."
+      }
     },
     {
       "id": "centerMarker",
@@ -456,10 +582,13 @@
       },
       "type": "Boolean",
       "value": false,
-      "separator": true
+      "separator": true,
+      "description": "Display a pin at the center of the map.",
+      "locale_description": {
+        "fr_FR": "Afficher une épingle au centre de la carte."
+      }
     }
   ],
-
   "events": [
     {
       "id": "mapChanged",
@@ -479,6 +608,10 @@
           "name": "Center",
           "locale_name": {
             "fr_FR": "Centre"
+          },
+          "description": "Current center coordinates of the map.",
+          "locale_description": {
+            "fr_FR": "Coordonnées actuelles du centre de la carte."
           }
         },
         "zoom": 13.0,
@@ -486,12 +619,19 @@
           "name": "Zoom",
           "locale_name": {
             "fr_FR": "Zoom"
+          },
+          "description": "Current zoom level of the map.",
+          "locale_description": {
+            "fr_FR": "Niveau de zoom actuel de la carte."
           }
         }
+      },
+      "description": "Fires when the map position or zoom level changes. Exposes the new center and zoom.",
+      "locale_description": {
+        "fr_FR": "Se déclenche quand la position ou le zoom de la carte change. Expose le nouveau centre et zoom."
       }
     }
   ],
-
   "actions": [
     {
       "id": "changeMap",
@@ -508,16 +648,28 @@
             "lat": 48.861,
             "lng": 2.344
           },
-          "bindable": true
+          "bindable": true,
+          "description": "Target center coordinates to navigate to.",
+          "locale_description": {
+            "fr_FR": "Coordonnées du centre cible vers lequel naviguer."
+          }
         },
         {
           "id": "zoom",
           "name": "Zoom",
           "type": "Float",
           "value": 13,
-          "bindable": true
+          "bindable": true,
+          "description": "Target zoom level.",
+          "locale_description": {
+            "fr_FR": "Niveau de zoom cible."
+          }
         }
-      ]
+      ],
+      "description": "Change the map position and zoom level programmatically.",
+      "locale_description": {
+        "fr_FR": "Changer la position et le niveau de zoom de la carte par programmation."
+      }
     },
     {
       "id": "fitBounds",
@@ -534,7 +686,11 @@
           "restrict": {
             "min": 0
           },
-          "bindable": true
+          "bindable": true,
+          "description": "Vertical padding in pixels around the fitted bounds.",
+          "locale_description": {
+            "fr_FR": "Marge verticale en pixels autour des limites ajustées."
+          }
         },
         {
           "id": "paddingHorizontal",
@@ -544,12 +700,19 @@
           "restrict": {
             "min": 0
           },
-          "bindable": true
+          "bindable": true,
+          "description": "Horizontal padding in pixels around the fitted bounds.",
+          "locale_description": {
+            "fr_FR": "Marge horizontale en pixels autour des limites ajustées."
+          }
         }
-      ]
+      ],
+      "description": "Adjust the map view to fit all visible markers within the viewport.",
+      "locale_description": {
+        "fr_FR": "Ajuster la vue de la carte pour afficher tous les marqueurs visibles dans la fenêtre."
+      }
     }
   ],
-
   "queryable": {
     "center": {
       "type": "Coord",
@@ -562,6 +725,10 @@
       "name": "Center",
       "locale_name": {
         "fr_FR": "Centre"
+      },
+      "description": "Current center coordinates of the map, available for data binding.",
+      "locale_description": {
+        "fr_FR": "Coordonnées actuelles du centre de la carte, disponibles pour le binding de données."
       }
     },
     "zoom": 13.0,
@@ -569,6 +736,10 @@
       "name": "Zoom",
       "locale_name": {
         "fr_FR": "Zoom"
+      },
+      "description": "Current zoom level of the map, available for data binding.",
+      "locale_description": {
+        "fr_FR": "Niveau de zoom actuel de la carte, disponible pour le binding de données."
       }
     }
   }
