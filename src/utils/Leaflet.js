@@ -10,6 +10,43 @@ import isEmpty from 'lodash/isEmpty';
 import pickBy from 'lodash/pickBy';
 import { toFixed } from './Math';
 
+const WEB_MERCATOR_MAX_LATITUDE = 85.0511287798;
+const WORLD_BOUNDS = L.latLngBounds(
+  [-WEB_MERCATOR_MAX_LATITUDE, -180],
+  [WEB_MERCATOR_MAX_LATITUDE, 180],
+);
+
+const shouldWrapWorld = (properties = {}) => properties.wrapWorld !== false;
+
+export const getTileLayerOptionsFromProperties = (properties = {}) => (
+  shouldWrapWorld(properties) ? {} : { noWrap: true }
+);
+
+const getMinZoomForWorldBounds = (map) => {
+  const initialMinZoom = map.options.minZoom;
+
+  map.options.minZoom = undefined;
+  const minZoom = map.getBoundsZoom(WORLD_BOUNDS, true);
+  map.options.minZoom = initialMinZoom;
+
+  return minZoom;
+};
+
+export const syncMapBoundsFromProperties = (map, properties = {}) => {
+  if (shouldWrapWorld(properties)) {
+    map.options.maxBoundsViscosity = 0;
+    map.setMaxBounds(null);
+    map.setMinZoom(undefined);
+    return;
+  }
+
+  const minZoom = getMinZoomForWorldBounds(map);
+
+  map.setMinZoom(minZoom);
+  map.options.maxBoundsViscosity = 1;
+  map.setMaxBounds(WORLD_BOUNDS);
+};
+
 export const patchDefaultIcons = () => {
   // eslint-disable-next-line no-underscore-dangle
   delete L.Icon.Default.prototype._getIconUrl;

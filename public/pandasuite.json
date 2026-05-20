@@ -416,6 +416,19 @@
       }
     },
     {
+      "id": "wrapWorld",
+      "name": "Repeat world",
+      "locale_name": {
+        "fr_FR": "Répéter le monde"
+      },
+      "type": "Boolean",
+      "value": true,
+      "description": "Repeat the world horizontally when panning past the antimeridian.",
+      "locale_description": {
+        "fr_FR": "Répéter le monde horizontalement lors du déplacement au-delà de l'antiméridien."
+      }
+    },
+    {
       "id": "googleApiKey",
       "name": "API key",
       "type": "String",

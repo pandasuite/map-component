@@ -10,9 +10,11 @@ import 'font-awesome/css/font-awesome.min.css';
 import each from 'lodash/each';
 
 import {
+  getTileLayerOptionsFromProperties,
   geoJSONToLayer,
   patchDefaultIcons,
   setupLayerFromMarker,
+  syncMapBoundsFromProperties,
 } from './utils/Leaflet';
 
 patchDefaultIcons();
@@ -24,7 +26,11 @@ export default class Leaflet {
     this.properties = properties;
     this.markers = markers;
     this.map = L.map('map').setView([center.lat, center.lng], properties.zoom);
+    syncMapBoundsFromProperties(this.map, properties);
     this.layersLookup = {};
+    this.map.on('resize', () => {
+      syncMapBoundsFromProperties(this.map, this.properties);
+    });
 
     this.setupMapLayer();
     this.setupCenter();
@@ -46,11 +52,16 @@ export default class Leaflet {
   }
 
   getTileLayerFromProps() {
+    const tileLayerOptions = getTileLayerOptionsFromProperties(
+      this.properties,
+    );
+
     switch (this.properties.type) {
       case 'Mapbox':
         return L.tileLayer(
           'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
           {
+            ...tileLayerOptions,
             attribution:
               'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             id: this.getMapBoxStyle().replace('mapbox://styles/', ''),
@@ -64,6 +75,7 @@ export default class Leaflet {
         return L.tileLayer(
           'https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}?key={apiKey}',
           {
+            ...tileLayerOptions,
             id: 'google-streets',
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
             attribution:
@@ -76,6 +88,7 @@ export default class Leaflet {
         return L.tileLayer(
           'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           {
+            ...tileLayerOptions,
             attribution:
               '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
           },
@@ -171,6 +184,7 @@ export default class Leaflet {
       zoom !== properties.zoom;
 
     this.properties = properties;
+    syncMapBoundsFromProperties(this.map, properties);
     this.map.removeLayer(this.mapLayer);
     if (this.centerMarker) {
       this.map.removeLayer(this.centerMarker);

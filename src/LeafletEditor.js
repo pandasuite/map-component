@@ -17,9 +17,11 @@ import findIndex from 'lodash/findIndex';
 import find from 'lodash/find';
 
 import {
+  getTileLayerOptionsFromProperties,
   geoJSONToLayer,
   patchDefaultIcons,
   setupLayerFromMarker,
+  syncMapBoundsFromProperties,
   syncMarkerWithLayer,
 } from './utils/Leaflet';
 import { addBounceAnimation } from './utils/Animation';
@@ -41,7 +43,11 @@ export default class LeafletEditor {
     this.properties = properties;
     this.markers = markers;
     this.map = L.map('map').setView([center.lat, center.lng], properties.zoom);
+    syncMapBoundsFromProperties(this.map, properties);
     this.layersLookup = {};
+    this.map.on('resize', () => {
+      syncMapBoundsFromProperties(this.map, this.properties);
+    });
 
     this.setupMapLayer();
     this.setupCenter();
@@ -65,11 +71,16 @@ export default class LeafletEditor {
   }
 
   getTileLayerFromProps() {
+    const tileLayerOptions = getTileLayerOptionsFromProperties(
+      this.properties,
+    );
+
     switch (this.properties.type) {
       case 'Mapbox':
         return L.tileLayer(
           'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
           {
+            ...tileLayerOptions,
             attribution:
               'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             id: this.getMapBoxStyle().replace('mapbox://styles/', ''),
@@ -83,6 +94,7 @@ export default class LeafletEditor {
         return L.tileLayer(
           'https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}?key={apiKey}',
           {
+            ...tileLayerOptions,
             attribution:
               'Map data &copy; <a href="https://www.google.com/maps">Google Maps</a>',
             id: 'google-streets',
@@ -95,6 +107,7 @@ export default class LeafletEditor {
         return L.tileLayer(
           'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           {
+            ...tileLayerOptions,
             attribution:
               '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
           },
@@ -287,6 +300,7 @@ export default class LeafletEditor {
       zoom !== properties.zoom;
 
     this.properties = properties;
+    syncMapBoundsFromProperties(this.map, properties);
     this.map.removeLayer(this.mapLayer);
     if (this.centerMarker) {
       this.map.removeLayer(this.centerMarker);
