@@ -17,12 +17,14 @@ import findIndex from 'lodash/findIndex';
 import find from 'lodash/find';
 
 import {
+  getMapOptionsFromProperties,
   getTileLayerOptionsFromProperties,
   geoJSONToLayer,
   patchDefaultIcons,
   setupLayerFromMarker,
   syncMapBoundsFromProperties,
   syncMarkerWithLayer,
+  syncWorldCopyJumpFromProperties,
 } from './utils/Leaflet';
 import { addBounceAnimation } from './utils/Animation';
 import { toFixed } from './utils/Math';
@@ -42,11 +44,22 @@ export default class LeafletEditor {
 
     this.properties = properties;
     this.markers = markers;
-    this.map = L.map('map').setView([center.lat, center.lng], properties.zoom);
+    // Guards programmatic map updates from echoing back as PandaBridge.UPDATED
+    // (Studio re-sends echoed properties via updateProperties → infinite loop).
+    this.isApplyingProperties = false;
+    this.map = L.map(
+      'map',
+      getMapOptionsFromProperties(properties),
+    ).setView([center.lat, center.lng], properties.zoom);
     syncMapBoundsFromProperties(this.map, properties);
     this.layersLookup = {};
     this.map.on('resize', () => {
-      syncMapBoundsFromProperties(this.map, this.properties);
+      this.isApplyingProperties = true;
+      try {
+        syncMapBoundsFromProperties(this.map, this.properties);
+      } finally {
+        this.isApplyingProperties = false;
+      }
     });
 
     this.setupMapLayer();
@@ -274,6 +287,10 @@ export default class LeafletEditor {
         this.centerMarker.setLatLng(new L.LatLng(center.lat, center.lng));
       }
 
+      if (this.isApplyingProperties) {
+        return;
+      }
+
       PandaBridge.send(PandaBridge.UPDATED, {
         properties: [
           {
@@ -299,21 +316,27 @@ export default class LeafletEditor {
       center.lng !== properties.center.lng ||
       zoom !== properties.zoom;
 
-    this.properties = properties;
-    syncMapBoundsFromProperties(this.map, properties);
-    this.map.removeLayer(this.mapLayer);
-    if (this.centerMarker) {
-      this.map.removeLayer(this.centerMarker);
+    this.isApplyingProperties = true;
+    try {
+      this.properties = properties;
+      syncWorldCopyJumpFromProperties(this.map, properties);
+      syncMapBoundsFromProperties(this.map, properties);
+      this.map.removeLayer(this.mapLayer);
+      if (this.centerMarker) {
+        this.map.removeLayer(this.centerMarker);
+      }
+      if (this.locate) {
+        this.map.removeControl(this.locate);
+      }
+      this.setupMapLayer();
+      this.setupCenter();
+      if (mapBoundsChanged) {
+        this.setMapView(properties);
+      }
+      this.locate = this.setupLocate();
+    } finally {
+      this.isApplyingProperties = false;
     }
-    if (this.locate) {
-      this.map.removeControl(this.locate);
-    }
-    this.setupMapLayer();
-    this.setupCenter();
-    if (mapBoundsChanged) {
-      this.setMapView(properties);
-    }
-    this.locate = this.setupLocate();
   }
 
   updateMarkers(markers) {
@@ -374,7 +397,7 @@ export default class LeafletEditor {
   }
 
   setMapView({ center, zoom }) {
-    this.map.setView([center.lat, center.lng], zoom);
+    this.map.setView([center.lat, center.lng], zoom, { animate: false });
   }
 
   fitMapView(options = {}) {

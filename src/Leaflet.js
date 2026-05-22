@@ -10,11 +10,13 @@ import 'font-awesome/css/font-awesome.min.css';
 import each from 'lodash/each';
 
 import {
+  getMapOptionsFromProperties,
   getTileLayerOptionsFromProperties,
   geoJSONToLayer,
   patchDefaultIcons,
   setupLayerFromMarker,
   syncMapBoundsFromProperties,
+  syncWorldCopyJumpFromProperties,
 } from './utils/Leaflet';
 
 patchDefaultIcons();
@@ -25,7 +27,10 @@ export default class Leaflet {
 
     this.properties = properties;
     this.markers = markers;
-    this.map = L.map('map').setView([center.lat, center.lng], properties.zoom);
+    this.map = L.map(
+      'map',
+      getMapOptionsFromProperties(properties),
+    ).setView([center.lat, center.lng], properties.zoom);
     syncMapBoundsFromProperties(this.map, properties);
     this.layersLookup = {};
     this.map.on('resize', () => {
@@ -184,6 +189,7 @@ export default class Leaflet {
       zoom !== properties.zoom;
 
     this.properties = properties;
+    syncWorldCopyJumpFromProperties(this.map, properties);
     syncMapBoundsFromProperties(this.map, properties);
     this.map.removeLayer(this.mapLayer);
     if (this.centerMarker) {

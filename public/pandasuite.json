@@ -369,12 +369,46 @@
     {
       "id": "zoom",
       "name": "Zoom",
-      "type": "Float",
+      "type": "Integer",
       "value": 13,
       "bindable": true,
       "description": "Default zoom level of the map.",
       "locale_description": {
         "fr_FR": "Niveau de zoom par défaut de la carte."
+      }
+    },
+    {
+      "id": "minZoom",
+      "name": "Zoom min.",
+      "locale_name": {
+        "fr_FR": "Min. zoom"
+      },
+      "type": "Integer",
+      "value": 0,
+      "restrict": {
+        "min": 0,
+        "max": 22
+      },
+      "description": "Lowest zoom level allowed on the map.",
+      "locale_description": {
+        "fr_FR": "Niveau de zoom le plus bas autorisé sur la carte."
+      }
+    },
+    {
+      "id": "maxZoom",
+      "name": "Zoom max.",
+      "locale_name": {
+        "fr_FR": "Max. zoom"
+      },
+      "type": "Integer",
+      "value": 18,
+      "restrict": {
+        "min": 0,
+        "max": 22
+      },
+      "description": "Highest zoom level allowed on the map.",
+      "locale_description": {
+        "fr_FR": "Niveau de zoom le plus haut autorisé sur la carte."
       }
     },
     {
@@ -396,6 +430,7 @@
       },
       "type": "Dropdown",
       "value": "OpenStreetMap",
+      "separator": true,
       "items": [
         {
           "id": "OpenStreetMap",

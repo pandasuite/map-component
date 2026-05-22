@@ -18,33 +18,102 @@ const WORLD_BOUNDS = L.latLngBounds(
 
 const shouldWrapWorld = (properties = {}) => properties.wrapWorld !== false;
 
-export const getTileLayerOptionsFromProperties = (properties = {}) => (
-  shouldWrapWorld(properties) ? {} : { noWrap: true }
+const clampMaxAboveMin = (minZoom, maxZoom) => (
+  Number.isFinite(maxZoom) && Number.isFinite(minZoom) && maxZoom < minZoom
+    ? minZoom
+    : maxZoom
 );
+
+const getConfiguredZoomBounds = (properties = {}) => {
+  const minZoom = Number.isFinite(properties.minZoom) ? properties.minZoom : undefined;
+  const maxZoom = Number.isFinite(properties.maxZoom) ? properties.maxZoom : undefined;
+  return { minZoom, maxZoom: clampMaxAboveMin(minZoom, maxZoom) };
+};
+
+export const getMapOptionsFromProperties = (properties = {}) => ({
+  worldCopyJump: shouldWrapWorld(properties),
+  ...getConfiguredZoomBounds(properties),
+});
+
+export const getTileLayerOptionsFromProperties = (properties = {}) => {
+  const options = shouldWrapWorld(properties) ? {} : { noWrap: true };
+  // L.TileLayer caps at maxZoom: 18 by default and hides itself above that.
+  const { maxZoom } = getConfiguredZoomBounds(properties);
+  if (Number.isFinite(maxZoom) && maxZoom > 18) {
+    options.maxZoom = maxZoom;
+  }
+  return options;
+};
+
+// Leaflet has no public toggle for worldCopyJump after init, so we replay the
+// wiring done by L.Map.Drag.addHooks. Pinned to leaflet 1.9.4 to lock these internals.
+export const syncWorldCopyJumpFromProperties = (map, properties = {}) => {
+  const worldCopyJump = shouldWrapWorld(properties);
+  if (map.options.worldCopyJump === worldCopyJump) return;
+  map.options.worldCopyJump = worldCopyJump;
+
+  const { dragging } = map;
+  const draggable = dragging && dragging._draggable;
+  if (!draggable) return;
+
+  const method = worldCopyJump ? 'on' : 'off';
+  draggable[method]('predrag', dragging._onPreDragWrap, dragging);
+  map[method]('zoomend', dragging._onZoomEnd, dragging);
+  if (worldCopyJump) dragging._onZoomEnd();
+};
 
 const getMinZoomForWorldBounds = (map) => {
   const initialMinZoom = map.options.minZoom;
+  const initialMaxZoom = map.options.maxZoom;
 
   map.options.minZoom = undefined;
+  map.options.maxZoom = undefined;
   const minZoom = map.getBoundsZoom(WORLD_BOUNDS, true);
   map.options.minZoom = initialMinZoom;
+  map.options.maxZoom = initialMaxZoom;
 
   return minZoom;
 };
 
 export const syncMapBoundsFromProperties = (map, properties = {}) => {
+  let { minZoom, maxZoom } = getConfiguredZoomBounds(properties);
+
   if (shouldWrapWorld(properties)) {
     map.options.maxBoundsViscosity = 0;
     map.setMaxBounds(null);
-    map.setMinZoom(undefined);
-    return;
+  } else {
+    map.options.maxBoundsViscosity = 1;
+    map.setMaxBounds(WORLD_BOUNDS);
+    if (map._loaded) {
+      map.panInsideBounds(WORLD_BOUNDS, { animate: false });
+    }
+
+    const worldBoundsMin = getMinZoomForWorldBounds(map);
+    minZoom = Number.isFinite(minZoom)
+      ? Math.max(minZoom, worldBoundsMin)
+      : worldBoundsMin;
+    maxZoom = clampMaxAboveMin(minZoom, maxZoom);
   }
 
-  const minZoom = getMinZoomForWorldBounds(map);
+  // Widen the options before setZoom so Leaflet's _limitZoom doesn't clamp to
+  // the old range. Otherwise setMinZoom/setMaxZoom trigger an animated re-clamp
+  // whose moveend fires after isApplyingProperties resets, re-entering the loop.
+  const zoom = map.getZoom();
+  let clamped = zoom;
+  if (Number.isFinite(minZoom) && clamped < minZoom) clamped = minZoom;
+  if (Number.isFinite(maxZoom) && clamped > maxZoom) clamped = maxZoom;
+  if (clamped !== zoom) {
+    const savedMin = map.options.minZoom;
+    const savedMax = map.options.maxZoom;
+    map.options.minZoom = minZoom;
+    map.options.maxZoom = maxZoom;
+    map.setZoom(clamped, { animate: false });
+    map.options.minZoom = savedMin;
+    map.options.maxZoom = savedMax;
+  }
 
   map.setMinZoom(minZoom);
-  map.options.maxBoundsViscosity = 1;
-  map.setMaxBounds(WORLD_BOUNDS);
+  map.setMaxZoom(maxZoom);
 };
 
 export const patchDefaultIcons = () => {
