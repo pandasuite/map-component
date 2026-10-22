@@ -15,6 +15,8 @@ import './css/editor.css';
 import each from 'lodash/each';
 import findIndex from 'lodash/findIndex';
 import find from 'lodash/find';
+import isEqual from 'lodash/isEqual';
+import keyBy from 'lodash/keyBy';
 
 import {
   getMapOptionsFromProperties,
@@ -36,6 +38,21 @@ const generateUniqueId = () => {
   return `${
     chr4() + chr4()
   }-${chr4()}-${chr4()}-${chr4()}-${chr4()}${chr4()}${chr4()}`;
+};
+
+const reshapeLayer = (layer, data) => {
+  const shape = geoJSONToLayer(data);
+
+  if (shape instanceof L.Polyline) {
+    layer.setLatLngs(shape.getLatLngs());
+    /* Geoman draws its handles from the shape it had when enabled */
+    if (layer.pm.enabled()) {
+      layer.pm.enable();
+    }
+    if (layer.pm.rotateEnabled()) {
+      layer.pm.enableRotate();
+    }
+  }
 };
 
 export default class LeafletEditor {
@@ -228,6 +245,24 @@ export default class LeafletEditor {
       drawMarker: true,
     });
 
+    /* Geoman 2.15 enables rotation on every layer added in rotate mode, points
+       and layers already removed again included, and both throw. Same filter
+       as later releases, plus a check that the layer is still on the map */
+    /* eslint-disable no-underscore-dangle */
+    this.map.pm.handleLayerAdditionInGlobalRotateMode = function reinitRotate() {
+      const layers = this._addedLayersRotate;
+
+      this._addedLayersRotate = {};
+      if (this.globalRotateModeEnabled()) {
+        each(layers, (layer) => {
+          if (layer._map && this._isRelevantForRotate(layer)) {
+            layer.pm.enableRotate();
+          }
+        });
+      }
+    };
+    /* eslint-enable no-underscore-dangle */
+
     this.map.on('pm:create', (e) => {
       this.addMarkerFromLayer(e.layer);
     });
@@ -269,14 +304,18 @@ export default class LeafletEditor {
 
   setupMarkers() {
     this.markers.forEach((marker) => {
-      const layer = geoJSONToLayer(marker.data);
-
-      if (layer) {
-        setupLayerFromMarker(layer, marker);
-        layer.addTo(this.map);
-        this.attachEventsToLayer(layer);
-      }
+      this.addLayerFromMarker(marker);
     });
+  }
+
+  addLayerFromMarker(marker) {
+    const layer = geoJSONToLayer(marker.data);
+
+    if (layer) {
+      setupLayerFromMarker(layer, marker);
+      layer.addTo(this.map);
+      this.attachEventsToLayer(layer);
+    }
   }
 
   setupHooks() {
@@ -340,40 +379,38 @@ export default class LeafletEditor {
   }
 
   updateMarkers(markers) {
-    const markerLayers = {};
-    const pathLayers = {};
+    const previous = keyBy(this.markers, 'id');
+    const layers = {};
 
     this.markers = markers;
 
     this.map.eachLayer((layer) => {
-      if (layer instanceof L.Marker && layer.uniqueId) {
-        markerLayers[layer.uniqueId] = { layer };
-      }
-      if (layer instanceof L.Path) {
-        pathLayers[layer.uniqueId] = { layer };
+      if (layer.uniqueId) {
+        layers[layer.uniqueId] = layer;
       }
     });
 
     each(this.markers, (marker) => {
-      if (markerLayers[marker.id]) {
-        const { layer } = markerLayers[marker.id];
+      const layer = layers[marker.id];
 
-        setupLayerFromMarker(layer, marker);
-        delete markerLayers[marker.id];
+      delete layers[marker.id];
+      if (!layer) {
+        this.addLayerFromMarker(marker);
+        return;
       }
-      if (pathLayers[marker.id]) {
-        const { layer } = pathLayers[marker.id];
-
-        setupLayerFromMarker(layer, marker);
-        delete pathLayers[marker.id];
+      /* A path's shape lives in its data only. The previous data already
+         holds what this editor sent, so its echo leaves a gesture alone */
+      if (
+        layer instanceof L.Polyline &&
+        previous[marker.id] &&
+        !isEqual(previous[marker.id].data, marker.data)
+      ) {
+        reshapeLayer(layer, marker.data);
       }
+      setupLayerFromMarker(layer, marker);
     });
 
-    each(pathLayers, ({ layer }) => {
-      this.map.removeLayer(layer);
-    });
-
-    each(markerLayers, ({ layer }) => {
+    each(layers, (layer) => {
       this.map.removeLayer(layer);
     });
   }
