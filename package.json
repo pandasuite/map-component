@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "start": "webpack-dev-server --open",
-    "build": "rm -f ./pandasuite-component.zip ./map-component-v*.zip && rm -rf build && webpack --mode production --devtool none && cd build && find . -name \"*.woff*\" -type f -delete && zip -r -X \"../map-component-v$npm_package_version.zip\" *",
+    "build": "rm -f ./pandasuite-component.zip ./map-component-v*.zip && rm -rf build && webpack --mode production --devtool none && cd build && zip -r -X \"../map-component-v$npm_package_version.zip\" *",
     "release": "release-it --no-npm.publish"
   },
   "devDependencies": {
